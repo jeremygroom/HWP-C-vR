@@ -24,9 +24,8 @@ input1UI <- function(id) {
              p("Upload your HWP data here!  For complete instructions on how to provide your own data or how to upload other data sets, see " , 
                a("this chapter", href = "https://jeremygroom.github.io/HWP-vR-Documentation/own.html#own"), " of the documentation."),
              HTML("<ol>
-                    <li> Create a <a href=https://github.com/>github </a> account if you do not have one. </li> 
                     <li> Obtain the template files.  This may be done from the Templates link on the left, by  
-                  <a href=https://jeremygroom.github.io/HWP-vR-Documentation/dnld.html#dnld-git-git>cloning the GitHub repository </a> or by
+                  <a href=https://jeremygroom.github.io/HWP-vR-Documentation/dnld.html#dnld-git-git>cloning the GitHub repository </a>, or by
                   <a href=https://jeremygroom.github.io/HWP-vR-Documentation/dnld.html#dnld-git-zip>downloading a compressed file of the repository </a>.  
                   Each of these options will provide you with the HWP Data folder.   </li>
                     <li> If you wish to upload an existing data set: </li>
@@ -259,7 +258,7 @@ input1Server <- function(id, hwp.dt, file.loc) {
                         harv.hwp = harv.hwp, bfcf.hwp = bfcf.hwp, tpr.hwp = tpr.hwp, ppr.hwp = ppr.hwp,  # data frames for Sankey
                         ratio_cat.hwp = ratio_cat.hwp, ccf_conversion.hwp = ccf_conversion.hwp, eur.hwp = eur.hwp,  # data frames for Sankey 
                         eu_half.lives.hwp = eu_half.lives.hwp, discard.fates.hwp = discard.fates.hwp, discard.hl.hwp = discard.hl.hwp,    # data frames for Sankey
-                        N.ITER = N.ITER, BURN.IN = BURN.IN, mc_iter_results = mc_iter_results, mc_plot = mc_plot, # Monte Carlo values (null)
+                        N.ITER = N.ITER, mc_iter_results = mc_iter_results, mc_plot = mc_plot, # Monte Carlo values (null)
                         C.names  = C.names, mc_PoolsTotalPlot = mc_PoolsTotalPlot)                                # Monte Carlo values (null)
       
       hwp.new <- append(hwp.new, const.lst)
