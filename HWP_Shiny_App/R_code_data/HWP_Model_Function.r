@@ -23,8 +23,7 @@
 ########################################################
 
 HwpModel.fcn <- function(harv, bfcf, tpr, ppr, ratio_cat, ccf_conversion, eur, eu_half.lives, discard.fates, discard.hl, 
-                         ownership.names, N.EUR, N.OWNERSHIP, 
-                         N.YEARS, PIU.LOSS) {
+                         ownership.names, N.EUR, N.OWNERSHIP, N.YEARS, PIU.WOOD.LOSS, PIU.PAPER.LOSS) {
   
   # Constructing data to place in the End Use Products array
   harv[is.na(harv) == T] <- 0        # Replace NAs with zeros
@@ -91,20 +90,22 @@ HwpModel.fcn <- function(harv, bfcf, tpr, ppr, ratio_cat, ccf_conversion, eur, e
   
   
   # Need the discarded products array (dp_array), generated every year from new timber harvest
-  eur.pulp <- grep("pulp", ratio_cat$EndUseProduct)      #End use ratio rows for wood pulp (100% used, no discard)
-  eur.fuel.pulp <- sort(c(eur.fuel, eur.pulp))      #End use ratio rows for fuel wood and wood pulp (both not discarded)
+  eur.pulp <- grep("pulp", ratio_cat$EndUseProduct)      #End use ratio rows for wood pulp 
+  #eur.fuel.pulp <- sort(c(eur.fuel, eur.pulp))      #End use ratio rows for fuel wood and wood pulp (both not discarded)
   
-  dp_array <- PIU.LOSS * eu_array             # Multiply the eu_array by the loss constant to create the discarded products array (dp_array).
-  dp_array[eur.fuel.pulp, , ] <- 0            # Removing fuel wood from the dp_array because it is assumed burned in the given year (no discard). 
-  # Pulp is removed too because there is no PIU loss for it.
+  PIU.LOSS <- matrix(rep(PIU.WOOD.LOSS, N.EUR), ncol = 1)
+  PIU.LOSS[eur.pulp,] <- PIU.PAPER.LOSS
   
+  dp_array <- sweep(eu_array, MARGIN = 1, PIU.LOSS, `*`)    # Multiply the eu_array by the loss vector to create the discarded products array (dp_array).
+  
+  dp_array[eur.fuel, , ] <- 0            # Removing fuel wood from the dp_array because it is assumed burned in the given year (no discard). 
+
+    
   
   # Need to develop an array where the products in use take into account the new products and the half-life of earlier products
-  nonPIU.loss <- rep(1.0 - PIU.LOSS, N.EUR)
-  nonPIU.loss[eur.fuel.pulp] <- 1                 # Again, no PIU change for pulp or fuel wood
-  nonPIU.loss_array <- array(rep(nonPIU.loss, N.OWNERSHIP * N.YEARS), c(N.EUR, N.OWNERSHIP, N.YEARS)) 
-  
-  eu.reduced_array <- eu_array * nonPIU.loss_array      # This is the End Use array reduced by the Placed in Use Loss (1-PIU.loss) except for pulp and fuel        
+  nonPIU.loss <- 1.0 - PIU.LOSS
+  nonPIU.loss[eur.fuel] <- 1                 # Again, no PIU change for pulp or fuel wood
+  eu.reduced_array <- sweep(eu_array, MARGIN = 1, nonPIU.loss, `*`) # This is the End Use array reduced by the Placed in Use Loss (1-PIU.loss) except for fuel
   eu.reduced_array[eur.fuel, , ] <- 0                   # No end use for fuel (burned to create fuel_array)
   
   
@@ -244,7 +245,7 @@ HwpModel.fcn <- function(harv, bfcf, tpr, ppr, ratio_cat, ccf_conversion, eur, e
               dumps_array = dumps_array, 
               pu.final_array = pu.final_array, 
               pu_array = pu_array, 
-              recov_array = recov_array))
+              recov_array = recov_array ))
   
 }
 

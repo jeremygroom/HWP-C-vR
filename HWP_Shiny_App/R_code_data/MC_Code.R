@@ -466,11 +466,14 @@ setcolorder(eu_ratios.ppr, c(1:2, (ncol(eu_ratios.ppr) - 1), ncol(eu_ratios.ppr)
 ## Variables to use
 eur.fuel <- grep("fuel", ratio_cat.hwp$EndUseProduct)
 eur.pulp <- grep("pulp", ratio_cat.hwp$EndUseProduct)      #End use ratio rows for wood pulp (100% used, no discard)
-eur.fuel.pulp <- sort(c(eur.fuel, eur.pulp) )
+
 # Matrix where the products in use take into account the new products and the half-life of earlier products
-nonPIU.loss <- rep(1.0 - PIU.LOSS, N.EUR)
-nonPIU.loss[eur.fuel.pulp] <- 1                 # Again, no PIU change for pulp or fuel wood
-nonPIU.loss_matrix <- matrix(rep(nonPIU.loss, N.YEARS), nrow = N.EUR)         # Previously nonPIU.loss_array
+PIU.LOSS <- matrix(rep(PIU.WOOD.LOSS, N.EUR), ncol = 1)
+PIU.LOSS[eur.pulp,] <- PIU.PAPER.LOSS
+nonPIU.loss <- 1.0 - PIU.LOSS
+nonPIU.loss[eur.fuel] <- 1                 # Again, no PIU change for pulp or fuel wood
+
+
 
 ########## Results output #############
 MCout <- array(0, c(N.YEARS, N.ITER, 4))
@@ -508,13 +511,12 @@ for (x in 1:N.ITER) {
   euhlMC <- matrix(c(1:N.EUR, hl3[,x]), nrow = N.EUR, byrow = F)                          ## Inserting the MC version of half lives (see above)
   
   # Need the discarded products matrix (dp_matrix), generated every year from new timber harvest
-  
-  dp_matrix <- PIU.LOSS * eu_matrix           # Previously dp_array
-  dp_matrix[eur.fuel.pulp,  ] <- 0            # Removing fuel wood from the dp_matrix because it is assumed burned in the given year (no discard). 
-  # Pulp is removed too because there is no PIU loss for it.
-  
-  
-  eu.reduced_matrix <- eu_matrix * nonPIU.loss_matrix      # Previously eu.reduced_array     
+  dp_matrix <- sweep(eu_matrix, MARGIN = 1, PIU.LOSS, `*`)    # Previously dp_array
+  dp_matrix[eur.fuel,  ] <- 0            # Removing fuel wood from the dp_matrix because it is assumed burned in the given year (no discard). 
+
+
+  # Need to develop an array where the products in use take into account the new products and the half-life of earlier products
+  eu.reduced_matrix <- sweep(eu_matrix, MARGIN = 1, nonPIU.loss, `*`) # This is the End Use matrix reduced by the Placed in Use Loss (1-PIU.loss) except for fuel
   eu.reduced_matrix[eur.fuel, ] <- 0                   # No end use for fuel (burned to create fuel_matrix)
   
   

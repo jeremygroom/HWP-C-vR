@@ -41,12 +41,8 @@ HWPapp <- function() {
   source(paste0(file.loc, "Plot_HomePage.R"))
     # Plotting function for determining Y-axis extent and breaks
   source(paste0(file.loc, "Plot_AnnTimHarv_Module.R"))
-#  source(paste0(file.loc, "Plot2_Module.R"))
-#  source(paste0(file.loc, "Plot3_Module.R"))
-#  source(paste0(file.loc, "Plot3_2_Module.R"))
   source(paste0(file.loc, "Plot_CStorOwn_Module.R"))
   source(paste0(file.loc, "Plot_CStorEm_Module.R"))
- # source(paste0(file.loc, "Plot7_Module.R"))
   source(paste0(file.loc, "Plot_AnNetChCStor_Module.R"))
   source(paste0(file.loc, "Plot_FateHarvC_Module.R"))
   source(paste0(file.loc, "Plot_HarvFuncLS_Module.R"))
@@ -64,7 +60,7 @@ HWPapp <- function() {
     dashboardHeader(title = "HWP Data Visualization", # Will only work when deployed to shinyapps.io 
                     tags$li(a(href = 'http://www.groomanalytics.com',   
                               img(src = 'GroomAnalyticsH.jpg',
-                                  title = "Groom Analytics Home", height = "50px"),
+                                  title = "Groom Analytics Home", height = "40px"),
                               style = "margin-right:10px; padding-top:5px; padding-bottom:5px;"), 
                             class = "dropdown"), 
                     titleWidth = 250),

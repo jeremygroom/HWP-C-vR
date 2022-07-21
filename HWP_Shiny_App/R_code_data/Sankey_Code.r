@@ -32,8 +32,13 @@ hwp.sankey.output <- HwpModel.Sankey.fcn(harv = harv.red.hwp,
                                          discard.hl = discard.hl.hwp, 
                                          hwp.yr = hwp.yr, 
                                          ownership.names = ownership.names, 
-                                         N.EUR = N.EUR, PIU.LOSS = PIU.LOSS, years = years, yr.index = yr.index,
-                                         ownr.index = ownr.index, d.yrs = d.yrs)
+                                         N.EUR = N.EUR, 
+                                         PIU.WOOD.LOSS = PIU.WOOD.LOSS,
+                                         PIU.PAPER.LOSS = PIU.PAPER.LOSS,
+                                         years = years, 
+                                         yr.index = yr.index,
+                                         ownr.index = ownr.index, 
+                                         d.yrs = d.yrs)
 
 
 
@@ -44,13 +49,14 @@ eec_mmtc <- sum(hwp.sankey.output$eec_matrix[, 1])
 # harvest to PIU
 eu.reduced_mmtc <- sum(hwp.sankey.output$eu.reduced_matrix[, 1])
 # harvest to discard
-dp_mmtc <- sum(hwp.sankey.output$dp_matrix[, 1])
-
+dp.wood_mmtc <- sum(hwp.sankey.output$dp_matrix[-hwp.sankey.output$eur.pulp, 1])
+dp.paper_mmtc <- sum(hwp.sankey.output$dp_matrix[hwp.sankey.output$eur.pulp, 1])
 # EEC
 # eec_mmtc  # See above. Already calculated
 
 # PIU
 # PIU to Discard
+
 pu.discard_mmtc <- sum(hwp.sankey.output$pu.discard_matrix[, 2:d.yrs])
 # PIU to PIU
 pu_mmtc <- eu.reduced_mmtc - pu.discard_mmtc   # Don't think I need this metric
@@ -110,21 +116,23 @@ ewoec_mmtc <- sum(swds.discard_mmtc, bwoec.input_mmtc, compost.input_mmtc, recov
 # Correct check = landfill/dump/recov yrs 2 & 3, bwoec/compost yrs 1 & 2
 
 
-nodes <- data.frame(name = c("Harvest", "Emitted with Energy Capture", "Products in Use", "Discard", "Dumps", "Landfill, Permanent", 
+nodes <- data.frame(name = c("Harvest", "Emitted with Energy Capture", "Products in Use", "Wood Production Discard", "Pulp Production Discard",   "Discard", "Dumps", "Landfill, Permanent", 
                              "Landfill, Decomposing", "Compost", "Burned", "Recovered", "Emitted without\nEnergy Capture", "Discard Energy Capture"))
 
 
 mat.mmtc <- matrix(0, nrow = length(nodes$name), ncol = length(nodes$name))
-mat.mmtc[1,] <- c(0, eec_mmtc, eu.reduced_mmtc, dp_mmtc, 0, 0, 0, 0, 0, 0, 0, 0)
-mat.mmtc[3,] <- c(0, 0, 0, pu.discard_mmtc, 0, 0, 0, 0, 0, 0, 0, 0)
-mat.mmtc[4,] <- c(0, 0, 0, 0, dumps.input_mmtc,	lf.fixed_mmtc,	(landfill.input_mmtc - lf.fixed_mmtc), compost.input_mmtc, bwoec.input_mmtc, recov.input_mmtc, 0, dec.input_mmtc)
-mat.mmtc[5,] <- c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, dumps.discard_mmtc, 0)
-mat.mmtc[6,] <- c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-mat.mmtc[7,] <- c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, landfill.discard_mmtc, 0)
-mat.mmtc[8,] <- c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, compost.input_mmtc, 0)
-mat.mmtc[9,] <- c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, bwoec.input_mmtc, 0)
-mat.mmtc[10,] <- c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, recov.discard_mmtc, 0)
-mat.mmtc[12,] <- c(0, dec.input_mmtc, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)          # Need to reorganize columns
+mat.mmtc[1,] <- c(0, eec_mmtc, eu.reduced_mmtc, dp.wood_mmtc, dp.paper_mmtc, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+mat.mmtc[3,] <- c(0, 0, 0, 0, 0, pu.discard_mmtc, 0, 0, 0, 0, 0, 0, 0, 0)
+mat.mmtc[4,] <- c(0, 0, 0, 0, 0, dp.wood_mmtc, 0, 0, 0, 0, 0, 0, 0, 0)
+mat.mmtc[5,] <- c(0, 0, 0, 0, 0, dp.paper_mmtc,  0, 0, 0, 0, 0, 0, 0, 0)
+mat.mmtc[6,] <- c(0, 0, 0, 0, 0, 0, dumps.input_mmtc,	lf.fixed_mmtc,	(landfill.input_mmtc - lf.fixed_mmtc), compost.input_mmtc, bwoec.input_mmtc, recov.input_mmtc, 0, dec.input_mmtc)
+mat.mmtc[7,] <- c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, dumps.discard_mmtc, 0)
+mat.mmtc[8,] <- c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+mat.mmtc[9,] <- c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, landfill.discard_mmtc, 0)
+mat.mmtc[10,] <- c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, compost.input_mmtc, 0)
+mat.mmtc[11,] <- c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, bwoec.input_mmtc, 0)
+mat.mmtc[12,] <- c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, recov.discard_mmtc, 0)
+mat.mmtc[13,] <- c(0, dec.input_mmtc, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)          # Need to reorganize columns
 
 nodes.zero <- which(apply(mat.mmtc, 1, sum) + apply(mat.mmtc, 2, sum) == 0)
 

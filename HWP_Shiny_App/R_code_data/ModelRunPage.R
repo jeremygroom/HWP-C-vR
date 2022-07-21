@@ -228,8 +228,11 @@ input1Server <- function(id, hwp.dt, file.loc) {
                                  discard.fates = discard.fates.hwp,
                                  discard.hl = discard.hl.hwp, 
                                  ownership.names = ownership.names,
-                                 N.EUR = N.EUR, N.OWNERSHIP = N.OWNERSHIP, 
-                                 N.YEARS = N.YEARS, PIU.LOSS = PIU.LOSS)
+                                 N.EUR = N.EUR, 
+                                 N.OWNERSHIP = N.OWNERSHIP, 
+                                 N.YEARS = N.YEARS, 
+                                 PIU.WOOD.LOSS = PIU.WOOD.LOSS,
+                                 PIU.PAPER.LOSS = PIU.PAPER.LOSS)
       
       # Create a new HWP file
       
@@ -252,7 +255,8 @@ input1Server <- function(id, hwp.dt, file.loc) {
   #browser()
       hwp.new <- hwp.output
       const.lst <- list(N.OWNERSHIP = N.OWNERSHIP, N.YEARS = N.YEARS, years = years, yearsUse = yearsUse, yearsTPO = yearsTPO, 
-                        yearsSE = yearsSE, ownership.names = ownership.names, N.EUR = N.EUR, PIU.LOSS = PIU.LOSS, 
+                        yearsSE = yearsSE, ownership.names = ownership.names, N.EUR = N.EUR, PIU.WOOD.LOSS = PIU.WOOD.LOSS,
+                        PIU.PAPER.LOSS = PIU.PAPER.LOSS, 
                         OWNERSHIP_STARTYEAR = OWNERSHIP_STARTYEAR, MIN.PLOT.YR = MIN.PLOT.YR,
                         MAX.PLOT.YR = MAX.PLOT.YR, MIN.PLOT.OWNR.YR = MIN.PLOT.OWNR.YR, SWDS_COLOR = SWDS_COLOR, PIU_COLOR = PIU_COLOR,
                         harv.hwp = harv.hwp, bfcf.hwp = bfcf.hwp, tpr.hwp = tpr.hwp, ppr.hwp = ppr.hwp,  # data frames for Sankey

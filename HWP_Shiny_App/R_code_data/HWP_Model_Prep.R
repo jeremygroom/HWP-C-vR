@@ -29,7 +29,8 @@ MAX.PLOT.YR <- ceiling(max(harv.hwp$Year / 10)) * 10     # For plotting.  Determ
 MIN.PLOT.OWNR.YR <- floor(min(OWNERSHIP_STARTYEAR/10)) * 10     # For plotting.  Determining, by 10s, where to set the minimum x-axis year range for data with ownership values
 
 SHIFTYEAR <- hwp.model.options$SHIFTYEAR    # Should output on tables/figures for everything but TPO be shifted one year later (e.g., timber harvested in year X, distributed to different pools by Jan 1 X+1)
-PIU.LOSS <- hwp.model.options$PIU.LOSS    # This is the Placed in Use Loss for all End Use products except for wood pulp and fuel wood. 
+PIU.WOOD.LOSS <- hwp.model.options$PIU.WOOD.LOSS    # This is the Placed in Use Loss for all End Use products except for wood pulp and fuel wood. 
+PIU.PAPER.LOSS <- hwp.model.options$PIU.PAPER.LOSS    # This is the Placed in Use Loss for all End Use products except for wood pulp and fuel wood. 
 
 # Scraping some values from the CSV files
 ownership.names <- names(harv.hwp)[2:ncol(harv.hwp)]  

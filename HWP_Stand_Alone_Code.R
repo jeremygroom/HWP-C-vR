@@ -36,13 +36,13 @@ library(networkD3)   # Sankey diagram
 ##########################################################################
 ###  Constants specific to the stand-alone version of the model
 GENERATE.SANKEY <- TRUE       # Set to FALSE if you do not want the code to generate a Sankey diagram.
-SANKEY.HARVEST.YEAR <- 2009   # Set to any year within your data range.
+SANKEY.HARVEST.YEAR <- 1960   # Set to any year within your data range.
 SANKEY.YEARS.OF.DECAY <- 30    # Set to any number between 3 and 100.
 
 ### Folder locations
 SHINY.CODE <- "HWP_Shiny_App/R_code_data/"              # Code chunks that both Shiny and the stand-alone model depend upon. They are stored in the Shiny app folder.
 IMPORT.DATA.FOLDER <- "HWP Data/ExistingData/"
-IMPORT.DATA.FILE <- "CA_Inputs_HWP_CF.TEST.xlsx"    # Change this to select other files from the "HWP Data" folder.
+IMPORT.DATA.FILE <- "CA_Inputs_HWP_Model.xlsx"    # Change this to select other files from the "HWP Data" folder.
 QAQC.FOLDER <- "HWP_Stand_Alone_Files/QAQC_Reports/"
 SA.CODE <- "HWP_Stand_Alone_Files/Standalone_R_files/"   # Stand-alone HWP model code
 
@@ -121,8 +121,11 @@ hwp.output <- HwpModel.fcn(harv = harv.hwp,
                            discard.fates = discard.fates.hwp,
                            discard.hl = discard.hl.hwp, 
                            ownership.names = ownership.names,
-                           N.EUR = N.EUR, N.OWNERSHIP = N.OWNERSHIP, 
-                           N.YEARS = N.YEARS, PIU.LOSS = PIU.LOSS)
+                           N.EUR = N.EUR, 
+                           N.OWNERSHIP = N.OWNERSHIP, 
+                           N.YEARS = N.YEARS, 
+                           PIU.WOOD.LOSS = PIU.WOOD.LOSS,
+                           PIU.PAPER.LOSS = PIU.PAPER.LOSS)
 
 # Prepare outputs for use in tables and arrays
 model.outputs <- hwp.output  

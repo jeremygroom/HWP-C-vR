@@ -147,7 +147,7 @@ DiscardProd.s.fcn <- function(fate.type, disc.fates, dyrs) {
 ############# Toned-down HWP model run on existing data to produce Sankey output ########################
 ##  The HWP model is used to generate decay histories for user-input start years and decay length
 HwpModel.Sankey.fcn <- function(harv, bfcf, tpr, ppr, ratio_cat, ccf_conversion, eur, eu_half.lives, discard.fates, discard.hl, 
-                                hwp.yr, ownership.names, N.EUR, PIU.LOSS, years, yr.index, ownr.index, d.yrs) {
+                                hwp.yr, ownership.names, N.EUR, PIU.WOOD.LOSS, PIU.PAPER.LOSS, years, yr.index, ownr.index, d.yrs) {
   
   # Constructing data to place in the End Use Products array
   a1 <- LT.fcn(harv[1,1], bfcf$Years)       # Alteration of main code.  Only need first year's value since that is only harvest
@@ -216,20 +216,22 @@ HwpModel.Sankey.fcn <- function(harv, bfcf, tpr, ppr, ratio_cat, ccf_conversion,
   
   # Need the discarded products array (dp_array), generated every year from new timber harvest
   eur.pulp <- grep("pulp", ratio_cat$EndUseProduct)      #End use ratio rows for wood pulp (100% used, no discard)
-  eur.fuel.pulp <- sort(c(eur.fuel, eur.pulp))      #End use ratio rows for fuel wood and wood pulp (both not discarded)
+#  eur.fuel.pulp <- sort(c(eur.fuel, eur.pulp))      #End use ratio rows for fuel wood and wood pulp (both not discarded)
   
-  dp_matrix <- PIU.LOSS * eu_matrix           # Previously dp_array
-  dp_matrix[eur.fuel.pulp,  ] <- 0            # Removing fuel wood from the dp_matrix because it is assumed burned in the given year (no discard). 
-  # Pulp is removed too because there is no PIU loss for it.
+  PIU.LOSS <- matrix(rep(PIU.WOOD.LOSS, N.EUR), ncol = 1)
+  PIU.LOSS[eur.pulp,] <- PIU.PAPER.LOSS
   
+  dp_matrix <- sweep(eu_matrix, MARGIN = 1, PIU.LOSS, `*`)    # Multiply the eu_matrix by the loss vector to create the discarded products matrix (dp_array).
+  dp_matrix[eur.fuel,  ] <- 0            # Removing fuel wood from the dp_matrix because it is assumed burned in the given year (no discard). 
   
+
   # Need to develop an array where the products in use take into account the new products and the half-life of earlier products
-  nonPIU.loss <- rep(1.0 - PIU.LOSS, N.EUR)
-  nonPIU.loss[eur.fuel.pulp] <- 1                 # Again, no PIU change for pulp or fuel wood
-  nonPIU.loss_matrix <- matrix(rep(nonPIU.loss, d.yrs), nrow = N.EUR) 
+  nonPIU.loss <- 1.0 - PIU.LOSS
+  nonPIU.loss[eur.fuel] <- 1                 # Again, no PIU change for pulp or fuel wood
+  eu.reduced_matrix <- sweep(eu_matrix, MARGIN = 1, nonPIU.loss, `*`) # This is the End Use matrix reduced by the Placed in Use Loss (1-PIU.loss) except for fuel
+  eu.reduced_matrix[eur.fuel, ] <- 0                   # No end use for fuel (burned to create fuel_array)
   
-  eu.reduced_matrix <- eu_matrix * nonPIU.loss_matrix      # Previously eu.reduced_array     
-  eu.reduced_matrix[eur.fuel, ] <- 0                   # No end use for fuel (burned to create fuel_matrix)
+  
   
   # Creating products in use for first and 2nd year (no input into 2nd year)
   pu.totals_decay <- decay.fcn.s(eu.reduced_matrix, euhl, N.EUR, d.yrs)
@@ -371,7 +373,7 @@ HLCreation.fcn <- function(discard.col, discard.halflives, pulp, n.eur) {
 # The WhichMin.fcn function finds which entry is the first to appear (first year).  If it is year = 1, then changed to year 2 because
 #  the matrix where this will be used starts on the second year if the first year has data.
 WhichMin.fcn <- function(x) {y <- tryCatch(min(which(x > 0)), warning = function(x) 0)
-if(y == 1) y <- 2
+if (y == 1) y <- 2
 y
 }
 
@@ -379,7 +381,7 @@ y
 ## contain no data (empty.array) and for the other rows which years are the first to contain values (first).  The outputs are two N.EUR x N.OWNERSHIP arrays.
 EmptyFirst.fcn <- function(target.array, n.eur, n.ownership){        
   empty.array <- first.array <- matrix(0, n.eur, n.ownership)     # first.array = for vectors of years where there is a value, the first year  
-  for(i in 1:n.ownership) {                                   # empty.array = vectors of years where for given owner, EUP, there are no values
+  for (i in 1:n.ownership) {                                   # empty.array = vectors of years where for given owner, EUP, there are no values
     empty.array[, i] <- apply(target.array[, i, ], 1, sum)
     first.array[, i] <-   apply(target.array[, i, ], 1, WhichMin.fcn)
   }
@@ -394,19 +396,19 @@ EmptyFirst.fcn <- function(target.array, n.eur, n.ownership){
 Decay.fcn <- function(empty.array, first.array, target.array, decay.matrix, N.EUR, N.OWNERSHIP, N.YEARS) {
   decay.array <- totals.array <- discard.array1.5 <- array(0, c(N.EUR, N.OWNERSHIP, N.YEARS))    # Initiating with zeros
   decay.array[, , 1] <- target.array[, , 1]   # The first year = initial values
-  for(k in 1:N.EUR) {  
-    for(j in 1:N.OWNERSHIP) {
-      if(empty.array[k,j] == 0) next 
+  for (k in 1:N.EUR) {  
+    for (j in 1:N.OWNERSHIP) {
+      if (empty.array[k,j] == 0) next 
       totals.array[k, j, ] <- cumsum(target.array[k, j,])
       
-      for(i in first.array[k,j]:N.YEARS) {
-        decay.array[k, j, i] <- as.numeric(target.array[k, j, i] + decay.array[k, j, i-1] * exp(-1 * log(2)/decay.matrix[[k,2]]))
+      for (i in first.array[k,j]:N.YEARS) {
+        decay.array[k, j, i] <- as.numeric(target.array[k, j, i] + decay.array[k, j, i - 1] * exp(-1 * log(2)/decay.matrix[[k,2]]))
       }
     }
   }
   # Products in Use Discards (End Uses Totals -minus- Pruducts in Use array )
   discard.array1 <- totals.array - decay.array  # The cumulative sums of carbon put into use ever minus the actual amount that remains after decay.
-  discard.array1.5[, , 2:N.YEARS] <- discard.array1[, , 1:(N.YEARS-1)]  # Filling in with shifted discard.array1 values accounting for previous year carbon emitted
+  discard.array1.5[, , 2:N.YEARS] <- discard.array1[, , 1:(N.YEARS - 1)]  # Filling in with shifted discard.array1 values accounting for previous year carbon emitted
   discard.array <- discard.array1 - discard.array1.5     # Annual emissions = for each year, the cumulative sum of in-use carbon  
   #   minus the remaining carbon, minus the emitted values from the previous year.
   # Output

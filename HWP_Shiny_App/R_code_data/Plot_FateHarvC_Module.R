@@ -56,7 +56,7 @@ plot_FateHarvC_UI <- function(id) {
           permanently inert landfill, landfill subject to decay, or recovered products in use), or emission categories (i.e., 
           compost, burned). Carbon can later leave a disposal storage pool through decay, ultimately 
           resulting in an emission.", style = "font-size:20px"),
-                 p("Depending on the year of the harvest selected, certain discard pathways may not exist yet.  For example, California carbon harvested 
+                 p("Depending on the year of the harvest selected, certain pathways may not exist.   For example, California carbon harvested 
           in 1952 that is later retired from use depending on the appropriate end-use half-life does not have a recovered disposal 
           pathway until paper recycling begins in 1960, or wood recycling begins in 1990. Current end-use half-life and disposal 
           parameters are projected for simulations that extend beyond the last year of the inventory (e.g., 1952 harvest simulated more 
@@ -112,18 +112,18 @@ plot_FateHarvC_Server <- function(id, hwp.dt, file.loc) {
       ownership.names <- hwp.data$ownership.names
       harv.hwp <- hwp.data$harv.hwp
       bfcf.hwp <- hwp.data$bfcf.hwp
-      tpr.hwp<- hwp.data$tpr.hwp
-      ppr.hwp<- hwp.data$ppr.hwp
-      ratio_cat.hwp<- hwp.data$ratio_cat.hwp
-      ccf_conversion.hwp<- hwp.data$ccf_conversion.hwp
-      eur.hwp<- hwp.data$eur.hwp
-      eu_half.lives.hwp<- hwp.data$eu_half.lives.hwp
-      discard.fates.hwp<- hwp.data$discard.fates.hwp
-      discard.hl.hwp<- hwp.data$discard.hl.hwp
-      PIU.LOSS<- hwp.data$PIU.LOSS
-      N.EUR<- hwp.data$N.EUR
-      
-      
+      tpr.hwp <- hwp.data$tpr.hwp
+      ppr.hwp <- hwp.data$ppr.hwp
+      ratio_cat.hwp <- hwp.data$ratio_cat.hwp
+      ccf_conversion.hwp <- hwp.data$ccf_conversion.hwp
+      eur.hwp <- hwp.data$eur.hwp
+      eu_half.lives.hwp <- hwp.data$eu_half.lives.hwp
+      discard.fates.hwp <- hwp.data$discard.fates.hwp
+      discard.hl.hwp <- hwp.data$discard.hl.hwp
+      PIU.WOOD.LOSS <- hwp.data$PIU.WOOD.LOSS
+      PIU.PAPER.LOSS <- hwp.data$PIU.PAPER.LOSS
+      N.EUR <- hwp.data$N.EUR
+
       ownr.sel <- "Total"
       yr.index <- which(years == hwp.yr)
       ownr.index <- which(ownership.names == ownr.sel)
@@ -194,7 +194,8 @@ plot_FateHarvC_Server <- function(id, hwp.dt, file.loc) {
       eu_half.lives.hwp <- hwp.data$eu_half.lives.hwp
       discard.fates.hwp <- hwp.data$discard.fates.hwp
       discard.hl.hwp <- hwp.data$discard.hl.hwp
-      PIU.LOSS <- hwp.data$PIU.LOSS
+      PIU.WOOD.LOSS <- hwp.data$PIU.WOOD.LOSS
+      PIU.PAPER.LOSS <- hwp.data$PIU.PAPER.LOSS
       N.EUR <- hwp.data$N.EUR
       
       
@@ -234,7 +235,8 @@ plot_FateHarvC_Server <- function(id, hwp.dt, file.loc) {
                                                discard.hl = discard.hl.hwp, 
                                                hwp.yr = hwp.yr, 
                                                ownership.names = ownership.names, 
-                                               N.EUR = N.EUR, PIU.LOSS = PIU.LOSS, years = years, yr.index = yr.index,
+                                               N.EUR = N.EUR, PIU.WOOD.LOSS = PIU.WOOD.LOSS,
+                                               PIU.PAPER.LOSS = PIU.PAPER.LOSS, years = years, yr.index = yr.index,
                                                ownr.index = ownr.index, d.yrs = d.yrs)
       
       csum.pu.discard <- cumsum(apply(hwp.sankey.output$pu.discard_matrix, 2, sum))
