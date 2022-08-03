@@ -1,6 +1,6 @@
 hwp.model.options <- hwp.data$HWP_MODEL_OPTIONS
-harv.hwp <- hwp.data$Harvest_BF   # harvest data, units = 1000 board feet. Used to obtain number of years (N.YEARS) and ownership names
-bfcf.hwp <- hwp.data$BFCF  # Board feet to cubic feet
+harv.hwp <- hwp.data$Harvest_MBF   # harvest data, units = 1000 board feet. Used to obtain number of years (N.YEARS) and ownership names
+mbfccf.hwp <- hwp.data$MBFCCF  # Board feet to cubic feet
 tpr.hwp <- hwp.data$TimberProdRatios     # Timber product ratios  (n = 40)
 ppr.hwp <- hwp.data$PrimaryProdRatio      # Primary product ratios (n = 64) 
 eur.hwp <- hwp.data$EndUseRatios       # Loading End Use Ratios (n = N.EUR)

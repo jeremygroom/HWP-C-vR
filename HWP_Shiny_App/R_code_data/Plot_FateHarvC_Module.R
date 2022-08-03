@@ -111,7 +111,7 @@ plot_FateHarvC_Server <- function(id, hwp.dt, file.loc) {
       d.yrs <- input$num
       ownership.names <- hwp.data$ownership.names
       harv.hwp <- hwp.data$harv.hwp
-      bfcf.hwp <- hwp.data$bfcf.hwp
+      mbfccf.hwp <- hwp.data$mbfccf.hwp
       tpr.hwp <- hwp.data$tpr.hwp
       ppr.hwp <- hwp.data$ppr.hwp
       ratio_cat.hwp <- hwp.data$ratio_cat.hwp
@@ -185,7 +185,7 @@ plot_FateHarvC_Server <- function(id, hwp.dt, file.loc) {
       blueline.yr <- input$num                  # For the plot, the input$num is now used for the vertical blue line
       ownership.names <- hwp.data$ownership.names
       harv.hwp <- hwp.data$harv.hwp
-      bfcf.hwp <- hwp.data$bfcf.hwp
+      mbfccf.hwp <- hwp.data$mbfccf.hwp
       tpr.hwp <- hwp.data$tpr.hwp
       ppr.hwp <- hwp.data$ppr.hwp
       ratio_cat.hwp <- hwp.data$ratio_cat.hwp
@@ -224,7 +224,7 @@ plot_FateHarvC_Server <- function(id, hwp.dt, file.loc) {
       
       # Run the HWP model that is minimized to the selected state/year/ownership for the Sankey display
       hwp.sankey.output <- HwpModel.Sankey.fcn(harv = harv.red.hwp, 
-                                               bfcf = bfcf.hwp,
+                                               mbfccf = mbfccf.hwp,
                                                tpr = tpr.red.hwp,
                                                ppr = ppr.red.hwp,
                                                ratio_cat = ratio_cat.hwp,

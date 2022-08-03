@@ -12,7 +12,7 @@ library(openxlsx)
 
 ### -- Constants -- ###
 ORIG.DATA.FILE <- "Oregon_Inputs_HWP_Model.xlsx"    # Original data file
-NEW.DATA <- "Oregon_BF_2019.xlsx"            # Excel file with harvest data (must be Excel, not CSV)
+NEW.DATA <- "Oregon_MBF_2019.xlsx"            # Excel file with harvest data (must be Excel, not CSV)
 DATA.FOLDER <- "HWP Data/ExistingData/"                   # Data location, both for original HWP data and for data to be appended.
 OUT.DATA <- "Oregon_Inputs_HWP_Modelv2.xlsx"        # The output file name
 
@@ -36,7 +36,7 @@ new.dat <- read.xlsx(paste0(DATA.FOLDER, NEW.DATA))
 # Original data file 
 hwp.model.data <- paste0(DATA.FOLDER, ORIG.DATA.FILE)
 
-SheetNames<-getSheetNames(hwp.model.data)
+SheetNames <- getSheetNames(hwp.model.data)
 hwp.data <- hwp.model.data %>%           # Creating a list of the Excel spreadsheets from the original data set.
   getSheetNames() %>%
   set_names() %>%
@@ -49,20 +49,20 @@ hwp.data <- hwp.model.data %>%           # Creating a list of the Excel spreadsh
 issues.var <- 0       # Indicator variable that will stop things if issues are found with the data.
 
 # Ensure columns are properly formatted
-if(all(apply(new.dat, 2, is.numeric)) == TRUE) {
+if (all(apply(new.dat, 2, is.numeric)) == TRUE) {
   print("New data are numeric") } else{ 
     issues.var <- 1
     print("WARNING: New data are not numeric.  Remove characters from data columns")}
 
 
 # Reduce new data to just the new values
-yrs.orig <- hwp.data$Harvest_BF$Year
+yrs.orig <- hwp.data$Harvest_MBF$Year
 n.orig <- length(yrs.orig)                          # Number of years in original data set
 yrs.new <- new.dat[!(new.dat$Year %in% yrs.orig),]   # Selecting years not in the original data set
 
 
 # Verify year number is correct (orig + new = sequential, no gaps)
-if(length(c(yrs.orig, yrs.new$Year)) == length(min(yrs.orig):max(yrs.new$Year))) {
+if (length(c(yrs.orig, yrs.new$Year)) == length(min(yrs.orig):max(yrs.new$Year))) {
   print("New and original data years are seqential") } else { 
     issues.var <- 1
     print("WARNING: a gap exists between new and original data years")  }
@@ -70,13 +70,13 @@ if(length(c(yrs.orig, yrs.new$Year)) == length(min(yrs.orig):max(yrs.new$Year)))
 
 
 # Verify that the ownership names are correct
-if(all(names(yrs.new) == names(hwp.data$Harvest_BF))) {
+if (all(names(yrs.new) == names(hwp.data$Harvest_MBF))) {
   print("Column names for new and original data match") } else { 
     issues.var <- 1
     print("WARNING: Column names differ between new and original data") }
 
 # For original data with ownership data...
-if(ncol(hwp.data$Harvest_BF) > 2){
+if (ncol(hwp.data$Harvest_MBF) > 2){
   own.var <- 0  # Indicator variable that ownership data do (0) / do not (1) exist.
   # Verify that ownership data are provided.   
   own.sum <- apply(yrs.new[, 2:(ncol(yrs.new) - 1)], 1, sum)
@@ -95,12 +95,12 @@ if(ncol(hwp.data$Harvest_BF) > 2){
 }
 
 
-if(issues.var == 1) {
+if (issues.var == 1) {
   print("PROBLEMS WITH COMPATIBILITY OF NEW DATA. PLEASE REVISE")
 } else {
-  hwp.data$Harvest_BF <- hwp.data$Harvest_BF %>% bind_rows(yrs.new)            # Appending new harvest data to original.
+  hwp.data$Harvest_MBF <- hwp.data$Harvest_MBF %>% bind_rows(yrs.new)            # Appending new harvest data to original.
   n.new <- nrow(yrs.new)                                                       # Number of new years.
-  hwp.data$BFCF[nrow(hwp.data$BFCF), ncol(hwp.data$BFCF)] <- max(yrs.new$Year) # Changing EndYear value to last year of data set
+  hwp.data$MBFCCF[nrow(hwp.data$MBFCCF), ncol(hwp.data$MBFCCF)] <- max(yrs.new$Year) # Changing EndYear value to last year of data set
   hwp.data$TimberProdRatios <- append.fcn(hwp.data$TimberProdRatios, 1)        # Adding on copies of the last year's proportion values.
   hwp.data$PrimaryProdRatios <- append.fcn(hwp.data$PrimaryProdRatios, 1)        # Adding on copies of the last year's proportion values.
   hwp.data$EndUseRatios <- append.fcn(hwp.data$EndUseRatios, 1)        # Adding on copies of the last year's proportion values.

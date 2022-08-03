@@ -22,14 +22,14 @@
 ## Model Code
 ########################################################
 
-HwpModel.fcn <- function(harv, bfcf, tpr, ppr, ratio_cat, ccf_conversion, eur, eu_half.lives, discard.fates, discard.hl, 
+HwpModel.fcn <- function(harv, mbfccf, tpr, ppr, ratio_cat, ccf_conversion, eur, eu_half.lives, discard.fates, discard.hl, 
                          ownership.names, N.EUR, N.OWNERSHIP, N.YEARS, PIU.WOOD.LOSS, PIU.PAPER.LOSS) {
   
   # Constructing data to place in the End Use Products array
   harv[is.na(harv) == T] <- 0        # Replace NAs with zeros
   
-  a1 <- unlist(lapply(harv[,1],  LT.fcn, y = bfcf$EndYear ))
-  harv$conv1 <- bfcf$Conversion[a1 + 1]
+  a1 <- unlist(lapply(harv[,1],  LT.fcn, y = mbfccf$EndYear ))
+  harv$conv1 <- mbfccf$Conversion[a1 + 1]
   
   harv_cf <- harv
   harv_cf[,2:ncol(harv)] <- ((harv[,2:ncol(harv)] * 1000) / harv$conv1)/100  #converting board-feet to cubic feet 

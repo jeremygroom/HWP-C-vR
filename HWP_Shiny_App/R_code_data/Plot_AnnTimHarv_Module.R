@@ -132,21 +132,6 @@ plot_AnnTimHarv_Server <- function(id, hwp.dt) {
           f1.c[, 2:ncol(f1.c)] <- cumu.fcn(as.matrix(f1.c[, 2:ncol(f1.c)]), f1.1, hwp.data$OWNERSHIP_STARTYEAR, hwp.data$years)  
         }        
         
-        #     if(input$ann.cumu == "2") {
-        #        f1.c <- apply(f1.c, 2, cumsum)
-        #        # Need to add values for early non-ownership years if they exist, e.g., Oregon
-        #        if(hwp.data$OWNERSHIP_STARTYEAR != hwp.data$years[1]){
-        #          #browser()
-        #          sum.harv1 <- sum(f1.c[which(hwp.data$years == hwp.data$OWNERSHIP_STARTYEAR),]) # Total value for first year with ownership data
-        #          prop.harv1 <- f1.c[which(hwp.data$years == hwp.data$OWNERSHIP_STARTYEAR),] / sum.harv1 # Proportion of harvest in each category
-        #          add.harv1 <- prop.harv1 * f1.1$values[which(hwp.data$years == (hwp.data$OWNERSHIP_STARTYEAR - 1))] * 1e6 # Applying proportion vector to prevoius cumsum total
-        #          x <- f1.c[which(hwp.data$years >= hwp.data$OWNERSHIP_STARTYEAR),]  # Identifying ownership years cumsum values
-        #          x2 <- t(x) + add.harv1                                             
-        #          x3 <- t(x2)
-        #          f1.c[which(hwp.data$years >= hwp.data$OWNERSHIP_STARTYEAR), ] <- x3 # Adding cumsum amounts from year before ownerships data began to all columns and rows of non-zero ownership data
-        #        }
-        #        f1.c <- data.frame(f1.c)
-        #      }
               f1.c <- f1.c %>%
                 #mutate(years = hwp.data$years) %>%
                 pivot_longer(2:(all_of(hwp.data$N.OWNERSHIP)), names_to = "Ownership", values_to = "values")

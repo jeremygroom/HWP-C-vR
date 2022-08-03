@@ -107,7 +107,7 @@ input1Server <- function(id, hwp.dt, file.loc) {
       
       # Check for sheet names = correct
       sheet.names <- names(hwp.data)
-      s.n.check <- all(sheet.names == c("HWP_MODEL_OPTIONS", "Harvest_BF","BFCF", "TimberProdRatios",  "PrimaryProdRatios", "EndUseRatios", 
+      s.n.check <- all(sheet.names == c("HWP_MODEL_OPTIONS", "Harvest_MBF","MBFCCF", "TimberProdRatios",  "PrimaryProdRatios", "EndUseRatios", 
                                         "RatioCategories","CCF_MT_Conversion",
                                         "EU_HalfLives",  "DiscardFates",  "Discard_HalfLives", "MonteCarloValues")) 
       
@@ -119,7 +119,7 @@ input1Server <- function(id, hwp.dt, file.loc) {
       
       
       # Check to make sure harvest columns contain data and are not missing or equal to zero.
-      harv.col.dat.check <- any( apply(hwp.data$Harvest_BF, 2, sum, na.rm = TRUE) == 0)
+      harv.col.dat.check <- any( apply(hwp.data$Harvest_MBF, 2, sum, na.rm = TRUE) == 0)
       h.c.d.c <- if (harv.col.dat.check) 2 else 1
       switch(h.c.d.c,
              1,
@@ -218,7 +218,7 @@ input1Server <- function(id, hwp.dt, file.loc) {
       
       #Run the HWP model
       hwp.output <- HwpModel.fcn(harv = harv.hwp,  # See the R code HWP_Model_Function.r, sourced from global.r
-                                 bfcf = bfcf.hwp,
+                                 mbfccf = mbfccf.hwp,
                                  tpr = tpr.hwp,
                                  ppr = ppr.hwp,
                                  ratio_cat = ratio_cat.hwp,
@@ -259,7 +259,7 @@ input1Server <- function(id, hwp.dt, file.loc) {
                         PIU.PAPER.LOSS = PIU.PAPER.LOSS, 
                         OWNERSHIP_STARTYEAR = OWNERSHIP_STARTYEAR, MIN.PLOT.YR = MIN.PLOT.YR,
                         MAX.PLOT.YR = MAX.PLOT.YR, MIN.PLOT.OWNR.YR = MIN.PLOT.OWNR.YR, SWDS_COLOR = SWDS_COLOR, PIU_COLOR = PIU_COLOR,
-                        harv.hwp = harv.hwp, bfcf.hwp = bfcf.hwp, tpr.hwp = tpr.hwp, ppr.hwp = ppr.hwp,  # data frames for Sankey
+                        harv.hwp = harv.hwp, mbfccf.hwp = mbfccf.hwp, tpr.hwp = tpr.hwp, ppr.hwp = ppr.hwp,  # data frames for Sankey
                         ratio_cat.hwp = ratio_cat.hwp, ccf_conversion.hwp = ccf_conversion.hwp, eur.hwp = eur.hwp,  # data frames for Sankey 
                         eu_half.lives.hwp = eu_half.lives.hwp, discard.fates.hwp = discard.fates.hwp, discard.hl.hwp = discard.hl.hwp,    # data frames for Sankey
                         N.ITER = N.ITER, mc_iter_results = mc_iter_results, mc_plot = mc_plot, # Monte Carlo values (null)
