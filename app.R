@@ -27,7 +27,7 @@ library(jpeg)
 library(shinybusy)   # Busy signal for Monte Carlo simulation run (ModelRunPage.R)
 library(vroom)
 
-#renv::snapshot()   # If any of the libraries are updated and the project works, run this code to preserve the new library changes.
+#renv::snapshot()     # If any of the libraries are updated and the project works, run this code to preserve the new library changes.
 
 
 # Load data and general functions
@@ -71,17 +71,17 @@ HWPapp <- function() {
                     label = "Select a data set", choices = state.choices),
         menuItem(h5("Home"), tabName = "home"),
         menuItem(h5("Timber Harvest Summaries"),
-                 menuSubItem("Annual Timber Harvest", tabName = "plot_ath" ),
-                 menuSubItem("Fate of Harvested Carbon", tabName = "fhc"),
-                 menuSubItem("Harvest by Functional Lifespan", tabName = "hf_ls")),
+                 menuSubItem("Annual Timber Harvest", tabName = "plot_ath", icon = icon("angles-right") ),
+                 menuSubItem("Fate of Harvested Carbon", tabName = "fhc", icon = icon("angles-right")),
+                 menuSubItem("Harvest by Functional Lifespan", tabName = "hf_ls", icon = icon("angles-right"))),
         menuItem(h5("Carbon Storage and Emissions"),
-                 menuSubItem("Carbon Storage by Ownership", tabName = "cso"),
-                 menuSubItem("Carbon Storage and Emissions", tabName = "csem"),
+                 menuSubItem("Carbon Storage by Ownership", tabName = "cso", icon = icon("angles-right")),
+                 menuSubItem("Carbon Storage and Emissions", tabName = "csem", icon = icon("angles-right")),
                  #        menuItem("Figure 7", icon = icon("tree-conifer", lib = "glyphicon"), tabName = "fig7"),
-                 menuSubItem("Annual Net Change in Carbon Storage", tabName = "anccs"),
-                 menuSubItem("Monte Carlo Estimates", tabName = "mc_est")),
+                 menuSubItem("Annual Net Change in Carbon Storage", tabName = "anccs", icon = icon("angles-right")),
+                 menuSubItem("Monte Carlo Estimates", tabName = "mc_est", icon = icon("angles-right"))),
         menuItem(h5("Documentation and Data Upload"),
-                 menuSubItem("Documentation", href = "https://jeremygroom.github.io/HWP-vR-Documentation/"),
+                 menuSubItem("Documentation", href = "https://jeremygroom.github.io/HWP-vR-Documentation/", icon = icon("angles-right")),
                  menuSubItem("Files and Code", icon = icon("github"), href = 'https://github.com/jeremygroom/HWP-C-vR'),
                  menuSubItem("Data Templates", icon = icon("github"), href = 'https://github.com/jeremygroom/HWP-C-vR/raw/main/HWP%20Data/HWP%20Data.zip'),
                  menuSubItem("Upload Data", icon = icon("cloud-upload", lib = "glyphicon"), tabName = "input1")),

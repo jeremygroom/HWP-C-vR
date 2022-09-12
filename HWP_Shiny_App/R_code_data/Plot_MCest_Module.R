@@ -143,13 +143,18 @@ plot_MCest_Server <- function(id, hwp.dt, file.loc) {
           theme(text = element_text(size = 20))
         
       } else if (is.null(hwp.data$mc_iter_results) == FALSE & plot.type == 3) {    
+        #browser()
         end.yr <- hwp.data$mc_PoolsTotalPlot$Year[nrow(hwp.data$mc_PoolsTotalPlot)]
         title.use3 <- paste0("Convergence evaluation with ", hwp.data$N.ITER, " iterations for products in use + solid waste disposal sites, ", end.yr)
+        
+        hwp.data$mc_iter_results$facet.labs <- as.character(sapply(hwp.data$mc_iter_results$stat, switch, 
+               "mean" = "Mean", "se" = "Standard Error", "ci95" = "90% Confidence Interval, Upper Limit", "ci05" = "90% Confidence Interval, Lower Limit"))
+        
         hwp.data$mc_iter_results$C <- hwp.data$mc_iter_results$C/1e6
         plot.mc <- ggplot(hwp.data$mc_iter_results, aes(iter, C)) +
           geom_line() +
          # geom_vline(xintercept = hwp.data$BURN.IN, color = "magenta") +
-          facet_wrap(~ stat, scales = "free_y") +
+          facet_wrap(~ facet.labs, scales = "free_y") +
           labs(x = "Iterations", y = y.lab.cc, title = if (counter$countervalue == 0) {wrapper(title.use3, 75)} else wrapper(input$change_titleMC, 75)) +
           theme(text = element_text(size = 20))
         

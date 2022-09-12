@@ -49,10 +49,10 @@ plot_AnNetChCStor_UI <- function(id) {
                not assume instant oxidation of wood from the forest ecosystem in the year of harvest with separate HWP pools acting as a 
                sink or source, as in the Production Approach. The HWP contribution is determined as the difference in the annual harvest 
                and the annual release of carbon to the atmosphere from HWPs where wood came from domestic harvest. In other words, the HWP 
-               contribution is the difference in annual harvest and annual emissions, or the net annual balance. This means the amount of 
-               harvest in a year remains part of the forest ecosystem carbon pools and is not counted as an emission. The net emissions from 
-               instant oxidation of harvested wood and the decay of products at the end of their useful life are reported in the HWP 
-               calculations, with the end result being the net balance for the forest sector, as described. Both the IPCC Production 
+               contribution is the difference in annual harvest and annual emissions, or the net annual balance. Timber harvest is represented 
+               as a lateral transfer of carbon from the forest ecosystem to the product sector, where carbon will be stored and subsequently 
+               released through burning (typically in the year of harvest) or decay (again, with carbon retention times depending on the type of 
+               product produced). Both the IPCC Production 
                Approach and the Simple Decay Approach are limited to domestic harvest only, therefore the HWP C estimates from this tool 
                can also be displayed to demonstrate the Simple Decay Approach, provided the correct outputs are used.", style = "font-size:20px"),
                  p("Users can view the IPCC Simple Decay Approach net balance figure using the dropdown menu in the top left portion of the 
@@ -74,7 +74,7 @@ plot_AnNetChCStor_UI <- function(id) {
                count emissions without energy capture. The details provided above for IPCC Production or Simple Decay Approaches correctly 
                describes how each of these datasets interact (along with annual harveset) to provide the HWP contribution to the Forest 
                Sector. ", style = "font-size:20px"),
-                 p("The overall width of annual change in each of the storage pools and the annual emissions with and without energy capture is 
+                 p("The overall height of annual change in each of the storage pools and the annual emissions with and without energy capture is 
                equivalent to the harvested carbon from the previous year, demonstrating that mass balance is maintained in these estimates.", style = "font-size:20px"),
                  p("*Note: the model provides cumulative emissions with a one-year lag. In order to calculate annual emissions, the change in 
                the cumulative emissions from one year to the next must be calculated. Additionally, to match up the correct harvest year 
