@@ -21,7 +21,7 @@ discard.fates.red.hwp <- if (length(hwp.yr:years[length(years)]) < d.yrs) {   # 
 # Run the HWP model that is minimized to the selected state/year/ownership for the Sankey display
 #  This function can be found in PlotFunctions1.r 
 hwp.sankey.output <- HwpModel.Sankey.fcn(harv = harv.red.hwp, 
-                                         mbfccf = mbfccf.hwp,
+                                         bfcf = bfcf.hwp,
                                          tpr = tpr.red.hwp,
                                          ppr = ppr.red.hwp,
                                          ratio_cat = ratio_cat.hwp,

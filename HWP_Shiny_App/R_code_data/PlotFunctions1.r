@@ -146,12 +146,12 @@ DiscardProd.s.fcn <- function(fate.type, disc.fates, dyrs) {
 
 ############# Toned-down HWP model run on existing data to produce Sankey output ########################
 ##  The HWP model is used to generate decay histories for user-input start years and decay length
-HwpModel.Sankey.fcn <- function(harv, mbfccf, tpr, ppr, ratio_cat, ccf_conversion, eur, eu_half.lives, discard.fates, discard.hl, 
+HwpModel.Sankey.fcn <- function(harv, bfcf, tpr, ppr, ratio_cat, ccf_conversion, eur, eu_half.lives, discard.fates, discard.hl, 
                                 hwp.yr, ownership.names, N.EUR, PIU.WOOD.LOSS, PIU.PAPER.LOSS, years, yr.index, ownr.index, d.yrs) {
   
   # Constructing data to place in the End Use Products array
-  a1 <- LT.fcn(harv[1,1], mbfccf$Years)       # Alteration of main code.  Only need first year's value since that is only harvest
-  harv$conv1 <- mbfccf$Conversion[a1 + 1]
+  a1 <- LT.fcn(harv[1,1], bfcf$Years)       # Alteration of main code.  Only need first year's value since that is only harvest
+  harv$conv1 <- bfcf$Conversion[a1 + 1]
   harv$conv1 <- ifelse(is.na(harv$conv1) == T,  # If selected years exceed data range, using most recent conversion factor to fill in gaps
                        harv$conv1[max(which(is.na(harv$conv1) == F))], harv$conv1)
    

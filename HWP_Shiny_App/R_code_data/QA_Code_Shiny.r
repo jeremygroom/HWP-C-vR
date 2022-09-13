@@ -79,7 +79,7 @@ tC.read <- function(dataframe.name) {
 #####################################################################################################
 
 harv.hwp <- hwp.data$Harvest_MBF   # harvest data, units = 1000 board feet. Used to obtain number of years (N.YEARS) and ownership names
-mbfccf.hwp <- hwp.data$MBFCCF  # Board feet to cubic feet
+bfcf.hwp <- hwp.data$BFCF  # Board feet to cubic feet
 tpr.hwp <- hwp.data$TimberProdRatios     # Timber product ratios  (n = 40)
 ppr.hwp <- hwp.data$PrimaryProdRatio      # Primary product ratios (n = 64) 
 eur.hwp <- hwp.data$EndUseRatios       # Loading End Use Ratios (n = N.EUR)
@@ -93,7 +93,7 @@ mc.adj.hwp <- hwp.data$MonteCarloValues
 
 ## Setting up the data frames "terminate" and "error report".  The data frame "terminate" saves instances that should stop the process from proceeding.
 #   The data frame "error report" will contain hopefully useful messages for users so that they know what to fix. 
-terminate <- error.report <- data.frame(item.id = 1:7, harv_hwp = rep(0, 7), mbfccf_hwp = rep(0, 7), tpr_hwp = rep(0, 7), ppr_hwp = rep(0, 7), 
+terminate <- error.report <- data.frame(item.id = 1:7, harv_hwp = rep(0, 7), bfcf_hwp = rep(0, 7), tpr_hwp = rep(0, 7), ppr_hwp = rep(0, 7), 
                                         ratio_cat_hwp = rep(0, 7), ccf_conversion_hwp = rep(0, 7), eur_hwp = rep(0, 7), eu_half_lives_hwp = rep(0, 7),
                                         discard_fates_hwp = rep(0, 7), discard_hl_hwp = rep(0, 7), mc_adj_hwp = rep(0, 7))
 
@@ -129,24 +129,24 @@ if (harv_true1 & terminate$harv_hwp[2] == 0 & terminate$harv_hwp[3] == 0) {
   }
 }
 
-# QA checks for mbfccf.hwp
-mbfccf_hwp <- tC.read("MBFCCF"); mbfccf.hwp <- mbfccf_hwp$tble; terminate$mbfccf_hwp[1] <- mbfccf_hwp$term; error.report$mbfccf_hwp[1] <- mbfccf_hwp$msg
-mbfccf_true1 <- is.data.frame(mbfccf.hwp)
+# QA checks for bfcf.hwp
+bfcf_hwp <- tC.read("BFCF"); bfcf.hwp <- bfcf_hwp$tble; terminate$bfcf_hwp[1] <- bfcf_hwp$term; error.report$bfcf_hwp[1] <- bfcf_hwp$msg
+bfcf_true1 <- is.data.frame(bfcf.hwp)
 
-mbfccf_namecheck <- name.check.fcn(mbfccf_true1, colnames(mbfccf.hwp), c("Conversion", "StartYear", "EndYear"), "three", "columns")
-error.report$mbfccf_hwp[2] <- mbfccf_namecheck$msg; terminate$mbfccf_hwp[2] <- mbfccf_namecheck$term
+bfcf_namecheck <- name.check.fcn(bfcf_true1, colnames(bfcf.hwp), c("Conversion", "StartYear", "EndYear"), "three", "columns")
+error.report$bfcf_hwp[2] <- bfcf_namecheck$msg; terminate$bfcf_hwp[2] <- bfcf_namecheck$term
 
-# Double-if statement.  As long as harv.hwp checks out, we want to see if the final MBFCCF year equals the final harv.hwp year
-if (terminate$harv_hwp[1] != 1 & terminate$harv_hwp[2] != 1 & mbfccf_true1 & terminate$mbfccf_hwp[2] == 0) {
-  if (mbfccf.hwp[nrow(mbfccf.hwp), 3] == LAST.YEAR) {
-    error.report$mbfccf_hwp[3] <- "MBFCCF final year equals harvest final year"} else {
-      error.report$mbfccf_hwp[3] <- "MBFCCF final year DOES NOT equal harvest final year"
-      terminate$mbfccf_hwp[3] <- 1}
+# Double-if statement.  As long as harv.hwp checks out, we want to see if the final BFCF year equals the final harv.hwp year
+if (terminate$harv_hwp[1] != 1 & terminate$harv_hwp[2] != 1 & bfcf_true1 & terminate$bfcf_hwp[2] == 0) {
+  if (bfcf.hwp[nrow(bfcf.hwp), 3] == LAST.YEAR) {
+    error.report$bfcf_hwp[3] <- "BFCF final year equals harvest final year"} else {
+      error.report$bfcf_hwp[3] <- "BFCF final year DOES NOT equal harvest final year"
+      terminate$bfcf_hwp[3] <- 1}
 }
 
 # Checking that all values are numeric
-mbfccf.vals.numeric.check <- vals.numeric.check.fcn(mbfccf_true1, mbfccf.hwp, 1)
-error.report$mbfccf_hwp[4] <- mbfccf.vals.numeric.check$msg ; terminate$mbfccf_hwp[4] <- mbfccf.vals.numeric.check$term
+bfcf.vals.numeric.check <- vals.numeric.check.fcn(bfcf_true1, bfcf.hwp, 1)
+error.report$bfcf_hwp[4] <- bfcf.vals.numeric.check$msg ; terminate$bfcf_hwp[4] <- bfcf.vals.numeric.check$term
 
 # QA checks for tpr.hwp
 tpr_hwp <- tC.read("TimberProdRatios"); tpr.hwp <- tpr_hwp$tble; terminate$tpr_hwp[1] <- tpr_hwp$term; error.report$tpr_hwp[1] <- tpr_hwp$msg
@@ -435,9 +435,9 @@ if (mc_adj_true1 & terminate$mc_adj_hwp[4] == 0) {
 
 
 ###### Consolidating results, testing to see if process should be halted (any "terminate" codes of 1),saving the Error_Report.csv file
-file.xwalk <- tibble(QA.name = c("mbfccf_hwp", "ccf_conversion_hwp", "discard_fates_hwp", "discard_hl_hwp", "eu_half_lives_hwp", 
+file.xwalk <- tibble(QA.name = c("bfcf_hwp", "ccf_conversion_hwp", "discard_fates_hwp", "discard_hl_hwp", "eu_half_lives_hwp", 
                                  "eur_hwp", "harv_hwp", "mc_adj_hwp", "ppr_hwp", "ratio_cat_hwp", "tpr_hwp"),
-                     "Worksheet Name" = c("MBFCCF", "CCF_MT_Conversion", "DiscardFates", "Discard_HalfLives", "EU_HalfLives", "EndUseRatios", 
+                     "Worksheet Name" = c("BFCF", "CCF_MT_Conversion", "DiscardFates", "Discard_HalfLives", "EU_HalfLives", "EndUseRatios", 
                                           "Harvest_BF", "MonteCarloValues", "PrimaryProdRatios", "RatioCategories", "TimberProdRatios"))
 
 #error.report[, 2:ncol(error.report)] <- as.character(error.report[, 2:ncol(error.report)])

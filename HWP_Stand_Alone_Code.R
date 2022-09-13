@@ -72,7 +72,7 @@ if (hwp.data$HWP_MODEL_OPTIONS$QA_TEST[1] == TRUE) {      # Should QA test be ru
   
 } else {
   harv.hwp <- hwp.data$Harvest_MBF   # harvest data, units = 1000 board feet. Used to obtain number of years (N.YEARS) and ownership names
-  mbfccf.hwp <- hwp.data$MBFCCF  # Thousand board feet to hundred cubic feet
+  bfcf.hwp <- hwp.data$BFCF  # Thousand board feet to hundred cubic feet
   tpr.hwp <- hwp.data$TimberProdRatios     # Timber product ratios  (n = 40)
   ppr.hwp <- hwp.data$PrimaryProdRatio      # Primary product ratios (n = 64) 
   eur.hwp <- hwp.data$EndUseRatios       # Loading End Use Ratios (n = N.EUR)
@@ -111,7 +111,7 @@ source(paste0(SHINY.CODE, "PlotFunctions1.r"), local = TRUE)     # Loading funct
 source(paste0(SHINY.CODE, "HWP_Model_Function.r"), local = TRUE) # The HWP model (a function) itself.
 
 hwp.output <- HwpModel.fcn(harv = harv.hwp,  
-                           mbfccf = mbfccf.hwp,
+                           bfcf = bfcf.hwp,
                            tpr = tpr.hwp,
                            ppr = ppr.hwp,
                            ratio_cat = ratio_cat.hwp,
