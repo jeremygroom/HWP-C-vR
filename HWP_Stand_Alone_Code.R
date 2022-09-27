@@ -42,7 +42,7 @@ SANKEY.YEARS.OF.DECAY <- 30    # Set to any number between 3 and 100.
 ### Folder locations
 SHINY.CODE <- "HWP_Shiny_App/R_code_data/"              # Code chunks that both Shiny and the stand-alone model depend upon. They are stored in the Shiny app folder.
 IMPORT.DATA.FOLDER <- "HWP Data/ExistingData/"
-IMPORT.DATA.FILE <- "CA_Inputs_HWP_Model.xlsx"    # Change this to select other files from the "HWP Data" folder.
+IMPORT.DATA.FILE <- "CA_Inputs_HWP_Model_alt.xlsx"    # Change this to select other files from the "HWP Data" folder.
 QAQC.FOLDER <- "HWP_Stand_Alone_Files/QAQC_Reports/"
 SA.CODE <- "HWP_Stand_Alone_Files/Standalone_R_files/"   # Stand-alone HWP model code
 
@@ -56,6 +56,11 @@ hwp.data <- hwp.model.data %>%
   set_names() %>%
   map(read.xlsx, xlsxFile = hwp.model.data)
 
+if (dim(hwp.data$BFCF)[2] > 3) {           # Some template files have additional information for users on the BFCF Excel worksheet. This code 
+  hwp.data$BFCF <- hwp.data$BFCF[, 1:3]    #    reduces the table to the desired values.
+  hwp.data$BFCF <- hwp.data$BFCF %>% dplyr::filter(is.na(Conversion) == FALSE) 
+}
+  
 hwp.model.options <- hwp.data$HWP_MODEL_OPTIONS
 
 

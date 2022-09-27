@@ -104,6 +104,10 @@ input1Server <- function(id, hwp.dt, file.loc) {
         set_names() %>%
         map(read.xlsx, xlsxFile = input$file1$datapath)
       
+      if (dim(hwp.data$BFCF)[2] > 3) {           # Some template files have additional information for users on the BFCF Excel worksheet. This code 
+        hwp.data$BFCF <- hwp.data$BFCF[, 1:3]    #    reduces the table to the desired values.
+        hwp.data$BFCF <- hwp.data$BFCF %>% dplyr::filter(is.na(Conversion) == FALSE) 
+      }
       
       # Check for sheet names = correct
       sheet.names <- names(hwp.data)

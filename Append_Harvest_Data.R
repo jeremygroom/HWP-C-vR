@@ -11,10 +11,14 @@ library(writexl)
 library(openxlsx)  
 
 ### -- Constants -- ###
-ORIG.DATA.FILE <- "Oregon_Inputs_HWP_Model.xlsx"    # Original data file
-NEW.DATA <- "Oregon_MBF_2019.xlsx"            # Excel file with harvest data (must be Excel, not CSV)
-DATA.FOLDER <- "HWP Data/ExistingData/"                   # Data location, both for original HWP data and for data to be appended.
-OUT.DATA <- "Oregon_Inputs_HWP_Modelv2.xlsx"        # The output file name
+ORIG.DATA.FILE <- "Oregon_Inputs_HWP_Model_alt.xlsx"    # Original data file
+NEW.DATA.FILE <- "Oregon_MBF_2019.xlsx"            # Excel file with harvest data (must be Excel, not CSV)
+OUT.DATA.FILE <- "Oregon_Inputs_HWP_Modelv2.xlsx"  # The output file name
+
+ORIG.DATA.FOLDER <- "HWP Data/ExistingData/"       # Original data location
+NEW.DATA.FOLDER <- "HWP Data/ModelExploration/"    # New data file location
+OUT.DATA.FOLDER <- "HWP Data/ModelExploration/"    # Location for updated output file (could be anywhere)
+
 
 ### -- Functions -- ###
 
@@ -31,16 +35,22 @@ append.fcn <- function(target.df, ex.cols){    # Target data frame, extra column
 
 
 # Load new data
-new.dat <- read.xlsx(paste0(DATA.FOLDER, NEW.DATA))
+new.dat <- read.xlsx(paste0(NEW.DATA.FOLDER, NEW.DATA.FILE))
 
 # Original data file 
-hwp.model.data <- paste0(DATA.FOLDER, ORIG.DATA.FILE)
+hwp.model.data <- paste0(ORIG.DATA.FOLDER, ORIG.DATA.FILE)
 
 SheetNames <- getSheetNames(hwp.model.data)
 hwp.data <- hwp.model.data %>%           # Creating a list of the Excel spreadsheets from the original data set.
   getSheetNames() %>%
   set_names() %>%
   map(read.xlsx, xlsxFile = hwp.model.data)
+
+
+if (dim(hwp.data$BFCF)[2] > 3) {           # Just in case.... some template files have additional information for users on the BFCF Excel worksheet. This code 
+  hwp.data$BFCF <- hwp.data$BFCF[, 1:3]    #    reduces the table to the desired values.
+  hwp.data$BFCF <- hwp.data$BFCF %>% dplyr::filter(is.na(Conversion) == FALSE) 
+}
 
 
 # This code assumes that the data file is constructed correctly.  If there are questions, open the data in the app and conduct a QA test or perform the test 
@@ -100,7 +110,7 @@ if (issues.var == 1) {
 } else {
   hwp.data$Harvest_MBF <- hwp.data$Harvest_MBF %>% bind_rows(yrs.new)            # Appending new harvest data to original.
   n.new <- nrow(yrs.new)                                                       # Number of new years.
-  hwp.data$MBFCCF[nrow(hwp.data$MBFCCF), ncol(hwp.data$MBFCCF)] <- max(yrs.new$Year) # Changing EndYear value to last year of data set
+  hwp.data$BFCF[nrow(hwp.data$BFCF), ncol(hwp.data$BFCF)] <- max(yrs.new$Year) # Changing EndYear value to last year of data set
   hwp.data$TimberProdRatios <- append.fcn(hwp.data$TimberProdRatios, 1)        # Adding on copies of the last year's proportion values.
   hwp.data$PrimaryProdRatios <- append.fcn(hwp.data$PrimaryProdRatios, 1)        # Adding on copies of the last year's proportion values.
   hwp.data$EndUseRatios <- append.fcn(hwp.data$EndUseRatios, 1)        # Adding on copies of the last year's proportion values.
@@ -110,7 +120,7 @@ if (issues.var == 1) {
     hwp.data$MonteCarloValues$Last_Year[which(hwp.data$MonteCarloValues$Last_Year == max.last.yr)] <- 2100  # with years are equal to one another.
   }
   
-  writexl::write_xlsx(hwp.data, paste0(DATA.FOLDER, OUT.DATA))  
+  writexl::write_xlsx(hwp.data, paste0(OUT.DATA.FOLDER, OUT.DATA.FILE))  
 }
 
 
