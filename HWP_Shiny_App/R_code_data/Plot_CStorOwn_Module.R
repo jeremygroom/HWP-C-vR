@@ -8,9 +8,8 @@ plot_CStorOwn_UI <- function(id) {
   ns <- NS(id)
   tagList(
     fluidRow(box(
-      status = "success",   # makes the top of the box green.  
-      column(12, offset = 1, h1(id = "main-header", "Carbon Storage by Ownership"),
-             tags$style(HTML("#main-header{color: blue;}"))))),
+     # status = "success",   # makes the top of the box green.  
+      column(12, offset = 1, h1(id = "main-header", "Carbon Storage by Ownership")))),
     box(width = 12,
         fluidRow(column(9, plotOutput(ns("Plot_cso"), height = 600)),
                  column(3, 

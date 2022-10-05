@@ -3,9 +3,8 @@
 input1UI <- function(id) {
   tagList(
     fluidRow(box(
-      status = "success",   # makes the top of the box green.  
-      column(8, offset = 1, h1(id = "main-header", "Upload Data"),
-             tags$style(HTML("#main-header{color: blue;}"))))),
+      #status = "success",   # makes the top of the box green.  
+      column(8, offset = 1, h1(id = "main-header", "Upload Data")))),
     shinyjs::useShinyjs(),     # For enable/disable buttons to work, MUST have this call here.
     fluidRow(column(6, offset = 1, fileInput(NS(id, "file1"), label = h3("Select model data file for input"), accept = ".xlsx", multiple = FALSE, buttonLabel = "Browse...", placeholder = "No file selected"))),
     fluidRow(column(4, offset = 1, actionButton(NS(id, "runQA"), label = "Run data file quality assurance")), 

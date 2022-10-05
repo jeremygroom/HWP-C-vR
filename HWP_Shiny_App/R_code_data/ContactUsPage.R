@@ -5,10 +5,9 @@ plot_ContactUs_UI <- function(id) {
   ns <- NS(id)
   tagList(
     fluidRow(
-      box(
-        status = "success",   # makes the top of the box green.  
-        column(12, offset = 1, h1(id = "main-header", "Contact Us"),
-               tags$style(HTML("#main-header{color: blue;}"))
+      box(width = 8,
+        #status = "success",   # makes the top of the box green.  
+        column(width = 11, offset = 1, h1(id = "main-header", "For questions about this tool, datasets, or accessibility issues, please contact us")
         )
       )
     ),

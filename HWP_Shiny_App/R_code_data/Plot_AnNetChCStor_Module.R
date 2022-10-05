@@ -4,9 +4,9 @@
 plot_AnNetChCStor_UI <- function(id) {
   tagList(
     fluidRow(box(width = 7,
-      status = "success",   # makes the top of the box green.  
+     # status = "success",   # makes the top of the box green.  
       column(12, offset = 1, h1(id = "main-header", "Annual Net Change in Carbon Storage"),
-             tags$style(HTML("#main-header{color: blue;}"))))),
+             ))),
     box(width = 4,
         fluidRow(column(10, offset = 1,  selectInput(NS(id, "fig.select"), label = h3("Select IPCC change figure"), 
                                                     choices = list("IPCC production approach - stock change" = 1,

@@ -127,6 +127,7 @@ HWPapp <- function() {
       tags$style(HTML(".js-irs-0 .irs-single, .js-irs-0 .irs-bar-edge, .js-irs-0 .irs-bar {background: purple}")), # Making first (only) slider background purple.
       tags$style(HTML(".irs-from {background-color: black !important; font-weight: bold;}")), 
       tags$style(HTML(".irs-to {background-color: black !important; font-weight: bold;}")), 
+      tags$style(HTML("#main-header{color: #154360;}")),
       tabItems(
         
         tabItem(tabName = "home",

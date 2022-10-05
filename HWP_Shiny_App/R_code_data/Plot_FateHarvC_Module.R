@@ -5,9 +5,8 @@
 plot_FateHarvC_UI <- function(id) {
   tagList(
     fluidRow(box(
-      status = "success",   # makes the top of the box green.  
-      column(12, offset = 1, h1(id = "main-header", "Fate of Harvested Carbon"),
-             tags$style(HTML("#main-header{color: blue;}"))))),
+      #status = "success",   # makes the top of the box green.  
+      column(12, offset = 1, h1(id = "main-header", "Fate of Harvested Carbon")))),
     fluidRow( 
       box(
         #h3("Sankey Diagram"),

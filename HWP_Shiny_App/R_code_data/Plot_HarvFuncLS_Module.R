@@ -4,9 +4,8 @@
 plot_HarvFuncLS_UI <- function(id) {
   tagList(
     fluidRow(box(width = 7,
-      status = "success",   # makes the top of the box green.  
-      column(12, offset = 1, h1(id = "main-header", "Harvest by Functional Lifespan"),
-             tags$style(HTML("#main-header{color: blue;}"))))),
+      #status = "success",   # makes the top of the box green.  
+      column(12, offset = 1, h1(id = "main-header", "Harvest by Functional Lifespan")))),
     fluidRow(box(width = 4,
                  selectInput(NS(id, "select"), label = h3("Select Figure Type"), 
                              choices = list("Harvest by end-use half-life" = 1, 

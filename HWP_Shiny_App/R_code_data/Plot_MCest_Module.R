@@ -4,9 +4,8 @@
 plot_MCest_UI <- function(id) {
   tagList(
     fluidRow(box(
-      status = "success",   # makes the top of the box green.  
-      column(12, offset = 1, h1(id = "main-header", "Monte Carlo Estimates"),
-             tags$style(HTML("#main-header{color: blue;}"))))),
+      #status = "success",   # makes the top of the box green.  
+      column(12, offset = 1, h1(id = "main-header", "Monte Carlo Estimates")))),
     fluidRow(box(width = 4,
                  selectInput(NS(id, "select"), label = h3("Select Monte Carlo Figure Option"), 
                              choices = list("Cumulative carbon in individual storage and emission pools" = 1,

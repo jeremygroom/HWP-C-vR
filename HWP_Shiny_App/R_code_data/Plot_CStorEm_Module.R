@@ -6,9 +6,8 @@ plot_CStorEm_UI <- function(id) {
   
   tagList(
     fluidRow(box(width = 7,
-      status = "success",   # makes the top of the box green.  
-      column(12, offset = 1, h1(id = "main-header", "Carbon Storage and Emissions"),
-             tags$style(HTML("#main-header{color: blue;}"))))),
+      #status = "success",   # makes the top of the box green.  
+      column(12, offset = 1, h1(id = "main-header", "Carbon Storage and Emissions")))),
     box(width = 12,
         fluidRow(column(9, plotOutput(NS(id, "pltCSEm"), height = 600)), 
                  column(3, radioButtons(NS(id, "filltype"), label = h3("Display Options"),

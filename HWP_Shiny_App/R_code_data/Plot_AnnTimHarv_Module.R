@@ -6,9 +6,8 @@ plot_AnnTimHarv_UI <- function(id) {
     
     useShinyjs(),
     fluidRow(box(
-      status = "success",   # makes the top of the box green.  
-      column(12, offset = 1, h1(id = "main-header", "Annual Timber Harvest"),
-             tags$style(HTML("#main-header{color: blue;}"))))),
+      #status = "success",   # makes the top of the box green.  
+      column(12, offset = 1, h1(id = "main-header", "Annual Timber Harvest")))),
     box(width = 12,
         status = "primary", 
         fluidRow(column(width = 9, 
