@@ -8,14 +8,14 @@ plot_HomePage_UI <- function(id) {
     fluidRow(box(width = 12,
       #status = "success",   # makes the top of the box green.  
       column(10, offset = 1, align = "center", h1(id = "hp-title", "Harvested Wood Products Carbon Model, v.R"),
-             tags$style(HTML("#hp-title{color: blue;
+             tags$style(HTML("#hp-title{color: #154360;
                              font-size: 64px;
                                  font-style: italic;}"))))),
     fluidRow(column(4, offset = 1, align = "center", 
                     imageOutput(ns("chair"))),
   #  fluidRow(column(width = 12, offset = 0, style = 'padding-left:0px; padding-right:1px; padding-top:15px; padding-bottom:15px')), # Adding a blank row.
     column(width = 5, offset = 1,
-                    box(width = 12,
+                    box(width = 12, h3("Summary"),
                         p("This web-based tool, HWP C vR, calculates cumulative carbon stocks and emissions through time for 
                           harvested wood products (HWP) using the Tier 3 Production Approach carbon estimation guidelines 
                           developed by the", a("Intergovernmental Panel on Climate Change", href = "https://www.ipcc.ch/"), ". This tool was created through a partnership 

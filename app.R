@@ -61,9 +61,11 @@ HWPapp <- function() {
                     tags$li(a(href = 'http://www.groomanalytics.com',   
                               img(src = 'GroomAnalyticsH.jpg',
                                   title = "Groom Analytics Home", height = "40px"),
-                              style = "margin-right:10px; padding-top:5px; padding-bottom:5px;"), 
-                            class = "dropdown"), 
-                    titleWidth = 250),
+                              style = "margin-right:10px; padding-top:5px; padding-bottom:5px;"),
+                            class = "dropdown"
+                    ), 
+                    titleWidth = "250px"
+                    ),
     
     dashboardSidebar(
       sidebarMenu(
@@ -90,14 +92,41 @@ HWPapp <- function() {
       )),
     dashboardBody(
       tags$head(         # CSS to make the header have a consistent color
-        tags$style(HTML('                   
+        tags$style(HTML(' 
+                /* Upper left corner (logo) */
         .skin-blue .main-header .logo {
-          background-color: #3c8dbc;
+          background-color: #154360 ;
         }
+                /* Upper left corner (logo) when hovered */
         .skin-blue .main-header .logo:hover {
-          background-color: #3c8dbc;
+          background-color: #154360;
         }
+                /* navbar (rest of the header) */
+        .skin-blue .main-header .navbar {
+                              background-color: #154360;
+        }
+                              
+        
+        .skin-blue .sidebar-menu > li.active > a {
+        color: #F1C40F;
+        }
+        .skin-blue main-sidebar .sidebar a {
+            color: #F1C40F;
+        }
+        
+        .skin-blue .main-sidebar .sidebar .sidebar-menu .treeview-menu li.active a {
+        color: #F1C40F !important;
+        }
+        .skin-blue .main-sidebar .sidebar .sidebar-menu .treeview-menu a {
+        color: #F9E79F !important;
+        }
+
       '))),
+      tags$html(lang = "en"),   # Set the page language for accessibility.
+      tags$head(tags$style(HTML("a {color: #4A235A; font-weight: bold;}"))), # Set hyperlink font color and make bold to make accessible.
+      tags$style(HTML(".js-irs-0 .irs-single, .js-irs-0 .irs-bar-edge, .js-irs-0 .irs-bar {background: purple}")), # Making first (only) slider background purple.
+      tags$style(HTML(".irs-from {background-color: black !important; font-weight: bold;}")), 
+      tags$style(HTML(".irs-to {background-color: black !important; font-weight: bold;}")), 
       tabItems(
         
         tabItem(tabName = "home",

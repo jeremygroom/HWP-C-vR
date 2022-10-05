@@ -10,11 +10,13 @@ plot_FateHarvC_UI <- function(id) {
              tags$style(HTML("#main-header{color: blue;}"))))),
     fluidRow( 
       box(
+        #h3("Sankey Diagram"),
+        alt = "Sankey diagram of harvested carbon use and decay over time",
         title = textOutput(NS(id, "MainTitle")),   # Dynamic title
+        label = h3("Sankey diagram of harvested carbon use and decay over time"),
         status = "primary", 
         width = 12, 
         sankeyNetworkOutput(NS(id, "Plot_fhc")))),
-    
     fluidRow(
       box(
         solidHeader = TRUE,
@@ -68,7 +70,8 @@ plot_FateHarvC_UI <- function(id) {
                  
              ))
     )
-  )
+      )
+
 }
 
 
@@ -135,7 +138,6 @@ plot_FateHarvC_Server <- function(id, hwp.dt, file.loc) {
                     fontSize = 14,
                     sinksRight = FALSE)
       
-      
       #htmlwidgets::appendContent(sankey, htmltools::tags$h1("Title"))
       #htmlwidgets::onRender(sankey)
       
@@ -144,8 +146,12 @@ plot_FateHarvC_Server <- function(id, hwp.dt, file.loc) {
     
     output$Plot_fhc <- renderSankeyNetwork({
       plotForOutput1() %>% 
-        htmlwidgets::onRender('function(el) { el.getElementsByTagName("svg")[0].removeAttribute("viewBox") }') # This portion was added so that the browser Firefox would display the Sankey correctly.  
-    })                                                                        # See: https://stackoverflow.com/questions/51145370/tiny-plot-output-from-sankeynetwork-networkd3-in-firefox
+        htmlwidgets::onRender('function(el) { el.getElementsByTagName("svg")[0].removeAttribute("viewBox") }')  # This portion was added so that the browser Firefox would display the Sankey correctly.  
+      # See: https://stackoverflow.com/questions/51145370/tiny-plot-output-from-sankeynetwork-networkd3-in-firefox
+
+    })
+    
+    
     
     output$sankey_download <-  downloadHandler(
       filename = function() {

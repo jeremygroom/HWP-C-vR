@@ -32,8 +32,11 @@ plot_HarvFuncLS_UI <- function(id) {
                    (i.e., functional lifespans), or harvested carbon that is instantly oxidized as fuelwood. For example, harvested 
                    carbon that becomes lumber can be used in a single family home end-use with a long functional lifespan, while lumber 
                    in a manufactured product end-use has a medium functional lifespan, while lumber used in the packaging and shipping 
-                   end-use has a short functional lifespan. Fuelwood includes landscaping materials and unutilized mill residue.  The 
-                   model assumes that landscaping materials and unutilized mill residue likely do not store carbon for 
+                   end-use has a short functional lifespan. Half-life groupings for “short,” “medium,” and “long” lifespan categories 
+                   were determined through expert opinion in the Canadian Forest Service, the British Columbia Ministry of Forests, 
+                   the California Department of Forestry and Fire Protection, the Oregon Department of Forestry, and the University 
+                   of Montana Bureau of Business and Economic Research. Fuelwood includes landscaping materials and unutilized mill 
+                   residue.  The model assumes that landscaping materials and unutilized mill residue likely do not store carbon for 
                    very long and can be included in fuelwood to represent more of an instantaneous oxidation. However, this results in the 
                    overreporting of wood burned for energy production and will be corrected in the future.", style = "font-size:20px"),
                  p("Using the dropdown menu, users can also explore the proportion of carbon harvested each year that is allocated to 
