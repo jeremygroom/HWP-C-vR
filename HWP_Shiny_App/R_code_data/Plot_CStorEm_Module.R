@@ -40,7 +40,9 @@ plot_CStorEm_UI <- function(id) {
                  p("Using the buttons on the right-side of the screen, users can explore the cumulative harvested wood product 
                    carbon or carbon dioxide equivalent in products in use and at solid waste disposal site storage pools or emitted 
                    with or without energy capture. These storage pools and emissions categories can be displayed individually or 
-                   together. ", style = "font-size:20px"),
+                   together. Note that under the IPCC Stock-change (forest ecosystem) and Production approaches (HWP) used in the US, 
+                   fuelwood emissions are implicitly accounted for as the wood is removed from the forest ecosystem pools and does not 
+                   enter HWP storage pools. ", style = "font-size:20px"),
                  p("Data can also be displayed for the components of each storage pool (e.g., products in use, landfill stock subject 
                    to decay, etc.) and emissions category (eg., fuelwood, landfill decay, etc.).", style = "font-size:20px"),
                  p("Lastly, the portion of the stock or emissions contributed by immediate oxidation, short, medium, or long-lasting 

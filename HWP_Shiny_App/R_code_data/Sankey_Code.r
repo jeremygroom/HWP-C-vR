@@ -116,7 +116,8 @@ ewoec_mmtc <- sum(swds.discard_mmtc, bwoec.input_mmtc, compost.input_mmtc, recov
 # Correct check = landfill/dump/recov yrs 2 & 3, bwoec/compost yrs 1 & 2
 
 
-nodes <- data.frame(name = c("Harvest", "Emitted with Energy Capture", "Products in Use", "Wood Production Discard", "Pulp Production Discard",   "Discard", "Dumps", "Landfill, Permanent", 
+nodes <- data.frame(name = c("Primary Products = Total Harvest", "Emitted with Energy Capture", "Products in Use", "Loss When Wood Placed Into End Uses", 
+                             "Loss When Pulp Placed Into End Uses",   "Discard", "Dumps", "Landfill, Permanent", 
                              "Landfill, Decomposing", "Compost", "Burned", "Recovered", "Emitted without\nEnergy Capture", "Discard Energy Capture"))
 
 
