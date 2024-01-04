@@ -117,7 +117,6 @@ plot_CStorOwn_Server <- function(id, hwp.dt, file.loc) {
       hex_codes1 <- viridis_pal(option = "C")(length(ownership.names) * 4)  # Setting up Viridis colors to use in figure, flexible by number of groups.
       hex_codes.use <- hex_codes1[seq(2, (length(ownership.names) * 4), 2)]  #  Trying to get colors that are somewhat different from one another by spacing them out a bit.
       
-
       ## Need to have adjustable plot and label order to groups.  Creating a data frame of ranks, names, colors, etc. to maintain consistency 
       #    as different groups are selected.
       half.f4 <- hwp.data$N.OWNERSHIP - 1                                                  
@@ -191,9 +190,8 @@ plot_CStorOwn_Server <- function(id, hwp.dt, file.loc) {
         labs(y = y.lab.cc, x = "Harvest Year", 
              title = if (input$action == 0) wrapper(title.complete(), 70) else wrapper(input$change_title_cso, 70)) + # See Functions for 'wrapper' 
         theme_bw()  + 
-        theme(text=element_text(size=20), 
-              legend.position="bottom", legend.text = element_text(size=15), legend.spacing.y = unit(0, 'cm'))
-     
+        theme(text = element_text(size = 20), 
+              legend.position = "bottom", legend.text = element_text(size = 15), legend.spacing.y = unit(0, 'cm'))
      
       gg.x2 <- gg.x + theme(legend.text = element_text(size = 8))
       

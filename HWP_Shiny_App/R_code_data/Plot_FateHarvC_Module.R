@@ -277,7 +277,7 @@ plot_FateHarvC_Server <- function(id, hwp.dt, file.loc) {
       C_yrs.y <- y.axis.fcn(c(0, y.vec$sum.y), F)
       
       y.lab.txt <- switch(as.numeric(input$metrictype), "Tg C", expression("Tg C"*O[2]*e))
-      
+      #browser()
       gg.x <- ggplot(C_yrs.df2, aes(`Years of Decay`, `MMT C`, fill = factor(Pools_Emissions, levels = names(C_yrs.df)))) + 
         geom_area(alpha = 0.6, color = "white") + 
         theme_bw() + 

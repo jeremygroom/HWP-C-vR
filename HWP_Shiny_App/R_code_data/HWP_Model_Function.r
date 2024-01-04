@@ -35,7 +35,6 @@ HwpModel.fcn <- function(harv, bfcf, tpr, ppr, ratio_cat, ccf_conversion, eur, e
   harv_cf[,2:ncol(harv)] <- ((harv[,2:ncol(harv)] * 1000) / harv$conv1)/100  #converting board-feet to cubic feet 
   harv_cf <- harv_cf[,1:(length(ownership.names) + 1)]
   
-  
   # tidying data, preparing for entry into array
   tpr1 <- tpr %>% pivot_longer(cols = 2:ncol(tpr), names_to = "Year", values_to = "ProdRatio")  #Seeking one value per row
   tpr1$Year <- as.numeric(tpr1$Year)
@@ -54,7 +53,7 @@ HwpModel.fcn <- function(harv, bfcf, tpr, ppr, ratio_cat, ccf_conversion, eur, e
   pp_ratios2 <- left_join(pp_ratios, tpr1, by = c("TimberProductID", "Year"))
   pp_ratios2$TP_PPratio <- pp_ratios2$PP_Values * pp_ratios2$ProdRatio
   
-  ppr_preArray <- left_join(pp_ratios2, harv_cf1, by = "Year") %>%    #Combining data, creating column of the product of the Product Ratio and cubic feet of harvest
+  ppr_preArray <- left_join(pp_ratios2, harv_cf1, by = "Year", relationship = "many-to-many") %>%    #Combining data, creating column of the product of the Product Ratio and cubic feet of harvest
     mutate(PP_cf = TP_PPratio * Vol_cf) %>%
     arrange(Year, factor(Source, levels = ownership.names))
   
@@ -68,7 +67,7 @@ HwpModel.fcn <- function(harv, bfcf, tpr, ppr, ratio_cat, ccf_conversion, eur, e
     pivot_longer(cols = 2:(N.YEARS + 1), names_to = "Year", values_to = "EU_Values") %>%
     mutate(Year = as.numeric(Year)) %>%
     left_join(ccf_mt, by = "PrimaryProductID" ) %>%
-    left_join(ppr_preArray, by = c("TimberProductID", "PrimaryProductID" , "Year")) %>%
+    left_join(ppr_preArray, by = c("TimberProductID", "PrimaryProductID" , "Year"), relationship = "many-to-many") %>%
     arrange(Year, factor(Source, levels = ownership.names)) %>%
     mutate(MTC = EU_Values * ProdRatio * PP_Values * CCFtoMTconv * Vol_cf)  # metric tons of carbon 
   

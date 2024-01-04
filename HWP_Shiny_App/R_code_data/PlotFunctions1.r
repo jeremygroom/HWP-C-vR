@@ -35,20 +35,20 @@ button.fcn <- function(plot_output, plot_name) {
 #}
 
 y.axis.fcn <- function(y.values, div.1m) {  # y values, divide by 1m (1e6)? (T/F).  This function is used in adjusting plot y axes
-  j <- if(div.1m) 1e6 else 1
+  j <- if (div.1m) 1e6 else 1
   ymax <- max(y.values/j)
   ymin <- min(y.values/j)
   yrange <- range(y.values/j)
   abs.yrange <- yrange[2] - yrange[1]
-  breaks.y <- {if(abs.yrange <= 3) 0.5 else
-    if(abs.yrange >= 3 & abs.yrange < 6) 1 else
-      if(abs.yrange >= 6 & abs.yrange < 20) 2 else
-        if(abs.yrange >= 20 & abs.yrange < 50) 5 else 
-          if(abs.yrange >= 50 & abs.yrange < 100) 10 else 
-            if(abs.yrange >= 100 & abs.yrange < 250) 25 else 
-              if(abs.yrange >= 250 & abs.yrange < 500) 50 else 
-                if(abs.yrange >= 500 & abs.yrange < 1500) 100 else 
-                  200} 
+  breaks.y <- {if (abs.yrange < 3) 0.5 else
+      if (abs.yrange >= 3 & abs.yrange < 6) 1 else
+        if (abs.yrange >= 6 & abs.yrange < 20) 2 else
+          if (abs.yrange >= 20 & abs.yrange < 50) 5 else 
+            if (abs.yrange >= 50 & abs.yrange < 100) 10 else 
+              if (abs.yrange >= 100 & abs.yrange < 250) 25 else 
+                if (abs.yrange >= 250 & abs.yrange < 500) 50 else 
+                  if (abs.yrange >= 500 & abs.yrange < 1500) 100 else 
+                    200} 
   max.y <- ceiling(ymax/breaks.y) * breaks.y
   min.y <- floor(ymin/breaks.y) * breaks.y
   #  if(max.y == 0) max.y <- 1 

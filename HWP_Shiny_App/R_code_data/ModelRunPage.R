@@ -144,7 +144,7 @@ input1Server <- function(id, hwp.dt, file.loc) {
     qa.out <- eventReactive(input$runQA, {
       hwp.data <- data.hwp()
       source(paste0(file.loc, "HWP_Model_Prep.R"), local = TRUE)
-#      browser()
+      #browser()
       
       source(paste0(file.loc, "QA_Code_Shiny.r"), local = TRUE )
  #     browser()
@@ -207,7 +207,6 @@ input1Server <- function(id, hwp.dt, file.loc) {
       # Prep the HWP model:
       hwp.data <- data.hwp()
       
-      
       ## Importing constants
       source(paste0(file.loc, "HWP_Model_Prep.R"), local = TRUE)
       
@@ -218,7 +217,7 @@ input1Server <- function(id, hwp.dt, file.loc) {
       mc_plot <- NULL
       C.names <-  NULL
       mc_PoolsTotalPlot <- NULL
-      
+      #browser()
       #Run the HWP model
       hwp.output <- HwpModel.fcn(harv = harv.hwp,  # See the R code HWP_Model_Function.r, sourced from global.r
                                  bfcf = bfcf.hwp,

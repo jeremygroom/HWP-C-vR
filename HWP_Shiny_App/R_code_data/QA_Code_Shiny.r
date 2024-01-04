@@ -114,6 +114,7 @@ if (terminate$harv_hwp[2] == 0) {
   LAST.YEAR <- harv.hwp$Year[N.YEARS]
   harv_true1 <- is.data.frame(harv.hwp)
 }
+
 # Checking that all values are numeric
 harv.vals.numeric.check <- vals.numeric.check.fcn(harv_true1, harv.hwp, 2)
 error.report$harv_hwp[3] <- harv.vals.numeric.check$msg ; terminate$harv_hwp[3] <- harv.vals.numeric.check$term
@@ -170,7 +171,7 @@ error.report$tpr_hwp[5] <- tpr.vals.numeric.check$msg ; terminate$tpr_hwp[5] <- 
 
 # Verifying that TPR columns sum to 1.0
 if (all(terminate$tpr_hwp[1:5] == 0)) {
-  if (all(apply(tpr.hwp[,2:ncol(tpr.hwp)], 2, sum) == 1)) {
+  if (sum(apply(tpr.hwp[,2:ncol(tpr.hwp)], 2, sum)) == (ncol(tpr.hwp) - 1)) {
     error.report$tpr_hwp[6] <- "All year columns total 1.0"} else {
       terminate$tpr_hwp[6] <- 1
       error.report$tpr_hwp[6] <- "ERROR: NOT ALL year columns total 1.0"}
@@ -255,7 +256,7 @@ if (all(terminate$eur_hwp[1:5] == 0) & eur_true1) {
       error.report$eur_hwp[6] <- paste("ERROR: NOT ALL year columns total", nrow(ppr.hwp))}
 }
 
-
+#browser()
 
 # QA checks for ratio_cat.hwp
 ratio_cat_hwp <- tC.read("RatioCategories"); ratio_cat.hwp <- ratio_cat_hwp$tble; terminate$ratio_cat_hwp[1] <- ratio_cat_hwp$term; error.report$ratio_cat_hwp[1] <- ratio_cat_hwp$msg

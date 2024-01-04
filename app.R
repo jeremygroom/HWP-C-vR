@@ -7,7 +7,8 @@
 
 renv::restore()   # Begin here to download appropriate package versions.  This line can be removed or commented out after being run the first time.
 
-
+library(packrat)
+library(rsconnect)
 library(tidyverse)
 library(shiny)
 library(shinyjs)
@@ -27,7 +28,7 @@ library(jpeg)
 library(shinybusy)   # Busy signal for Monte Carlo simulation run (ModelRunPage.R)
 library(vroom)
 
-#renv::snapshot()     # If any of the libraries are updated and the project works, run this code to preserve the new library changes.
+renv::snapshot()     # If any of the libraries are updated and the project works, run this code to preserve the new library changes.
 
 
 # Load data and general functions

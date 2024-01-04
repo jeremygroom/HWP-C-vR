@@ -124,7 +124,7 @@ plot_AnnTimHarv_Server <- function(id, hwp.dt) {
         f1.c <- t(apply(hwp.data$eu_array, MAR = c(2, 3), sum))  # Finding sum of EU categories by year and ownership
         f1.c <- data.frame(f1.1$years, f1.c)
         names(f1.c) <- c('years', hwp.data$ownership.names)
-        f1.c <- f1.c %>% select(-Total)
+        f1.c <- f1.c %>% select(-Total) 
         #names(f1.c) <- c("years", hwp.data$ownership.names[hwp.data$ownership.names != "Total"])
         if (input$ann.cumu == "2") {
 
@@ -158,7 +158,7 @@ plot_AnnTimHarv_Server <- function(id, hwp.dt) {
             data1 <- f1.1.bbf
             data2 <- f1.c.bbf
           }
-        
+
         p <-  ggplot(data2, aes(years, get(use.value), fill = Ownership)) + 
           scale_fill_viridis(discrete = T, 
                              begin = 1, end = 0) +
@@ -170,10 +170,10 @@ plot_AnnTimHarv_Server <- function(id, hwp.dt) {
                 panel.background = element_rect(fill = 'lightgrey'))
 
         p1 <- p + geom_area(alpha = 0.8, color = "white") + 
-          geom_line(data = data1, aes(color = "black"), size = 0.75) + 
+          geom_line(data = data1, aes(color = "black"), linewidth = 0.75) + 
           scale_color_manual(values = "black", name = "Total", labels = NULL)
         p2 <- p + geom_area(alpha = 0.8, color = "white")   
-        p3 <- p + geom_line(data = data1, size = 0.75) 
+        p3 <- p + geom_line(data = data1, linewidth = 0.75) 
 
         switch(plot.type,
                p1,
@@ -192,7 +192,7 @@ plot_AnnTimHarv_Server <- function(id, hwp.dt) {
 #        y.lab.sel <- if(plot.metric == 1) "Timber Product Output (Tg C)" else "Timber Product Output (BBF)"
 
         p1 <- ggplot(data1, aes(years, get(use.value))) + 
-          geom_line(size = 0.75) +
+          geom_line(linewidth = 0.75) +
           scale_x_continuous(breaks = seq(hwp.data$MIN.PLOT.YR, hwp.data$MAX.PLOT.YR, by = 10), limits = c(hwp.data$MIN.PLOT.YR, hwp.data$MAX.PLOT.YR)) +
           scale_y_continuous(breaks = seq(0, y1.lims$max.y, by = y1.lims$breaks.y), limits = c(0, y1.lims$max.y), expand = c(0, 0)) +
           labs(y = y.lab.sel, x = "Harvest Year", title =  if (input$action == 0) title.adj() else input$change_title) + 
