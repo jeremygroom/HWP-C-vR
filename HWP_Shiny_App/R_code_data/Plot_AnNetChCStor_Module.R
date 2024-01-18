@@ -131,7 +131,6 @@ plot_AnNetChCStor_Server <- function(id, hwp.dt) {
         t1$Net <- t1$Net * 44/12
       }  
       
-      
       t2.labels <- c("Net", "Emitted with\nEnergy Capture", "Emitted without\nEnergy Capture", "Solid Waste\nDisposal Sites", "Products in Use", "Harvest")
       t2.labels <- factor(t2.labels, as.ordered(t2.labels))
       #    hex_codes1 <- viridis_pal(option = "C")(18)  # Setting up Viridis colors to use in figure, flexible by number of groups.

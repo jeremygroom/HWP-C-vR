@@ -1,6 +1,6 @@
 # Container for functions to be used in the HWP Shiny app
 
- # Function for download buttons
+# Function for download buttons
 button.fcn <- function(plot_output, plot_name) {
   downloadHandler(
     filename = plot_name
@@ -10,14 +10,14 @@ button.fcn <- function(plot_output, plot_name) {
                y <- plot_output
                y <- y + theme(text=element_text(size=12)) 
                y
-               }, 
+             }, 
              device = "png", height = 5, width = 7, units = "in", dpi = 300)
     })
 }
 
 
 
-  # Function for determining axis demarcations for plots
+# Function for determining axis demarcations for plots
 #y.axis.fcn <- function(y.values, div.1m) {  # y values, divide by 1m (1e6)? (T/F).  This function is used in adjusting plot y axes
 #  j <- if(div.1m) 1e6 else 1
 #  ymax <- max(y.values/j)
@@ -40,15 +40,17 @@ y.axis.fcn <- function(y.values, div.1m) {  # y values, divide by 1m (1e6)? (T/F
   ymin <- min(y.values/j)
   yrange <- range(y.values/j)
   abs.yrange <- yrange[2] - yrange[1]
-  breaks.y <- {if (abs.yrange < 3) 0.5 else
-      if (abs.yrange >= 3 & abs.yrange < 6) 1 else
-        if (abs.yrange >= 6 & abs.yrange < 20) 2 else
-          if (abs.yrange >= 20 & abs.yrange < 50) 5 else 
-            if (abs.yrange >= 50 & abs.yrange < 100) 10 else 
-              if (abs.yrange >= 100 & abs.yrange < 250) 25 else 
-                if (abs.yrange >= 250 & abs.yrange < 500) 50 else 
-                  if (abs.yrange >= 500 & abs.yrange < 1500) 100 else 
-                    200} 
+  breaks.y <- {
+    if (abs.yrange < 0.5) 0.1 else 
+      if (abs.yrange >= 0.5 & abs.yrange < 3) 0.5 else
+        if (abs.yrange >= 3 & abs.yrange < 6) 1 else
+          if (abs.yrange >= 6 & abs.yrange < 20) 2 else
+            if (abs.yrange >= 20 & abs.yrange < 50) 5 else 
+              if (abs.yrange >= 50 & abs.yrange < 100) 10 else 
+                if (abs.yrange >= 100 & abs.yrange < 250) 25 else 
+                  if (abs.yrange >= 250 & abs.yrange < 500) 50 else 
+                    if (abs.yrange >= 500 & abs.yrange < 1500) 100 else 
+                      200} 
   max.y <- ceiling(ymax/breaks.y) * breaks.y
   min.y <- floor(ymin/breaks.y) * breaks.y
   #  if(max.y == 0) max.y <- 1 
@@ -154,12 +156,12 @@ HwpModel.Sankey.fcn <- function(harv, bfcf, tpr, ppr, ratio_cat, ccf_conversion,
   harv$conv1 <- bfcf$Conversion[a1 + 1]
   harv$conv1 <- ifelse(is.na(harv$conv1) == T,  # If selected years exceed data range, using most recent conversion factor to fill in gaps
                        harv$conv1[max(which(is.na(harv$conv1) == F))], harv$conv1)
-   
+  
   harv_cf <- harv
   harv_cf[,2:ncol(harv)] <- ((harv[,2:ncol(harv)] * 1000) / harv$conv1)/100  #converting board-feet to cubic feet 
   harv_cf <- harv_cf[,1:2]
- 
-
+  
+  
   
   # tidying data, preparing for entry into array
   tpr1 <- tpr %>% pivot_longer(cols = 2:ncol(tpr), names_to = "Year", values_to = "ProdRatio")  #Seeking one value per row
@@ -216,7 +218,7 @@ HwpModel.Sankey.fcn <- function(harv, bfcf, tpr, ppr, ratio_cat, ccf_conversion,
   
   # Need the discarded products array (dp_array), generated every year from new timber harvest
   eur.pulp <- grep("pulp", ratio_cat$EndUseProduct)      #End use ratio rows for wood pulp (100% used, no discard)
-#  eur.fuel.pulp <- sort(c(eur.fuel, eur.pulp))      #End use ratio rows for fuel wood and wood pulp (both not discarded)
+  #  eur.fuel.pulp <- sort(c(eur.fuel, eur.pulp))      #End use ratio rows for fuel wood and wood pulp (both not discarded)
   
   PIU.LOSS <- matrix(rep(PIU.WOOD.LOSS, N.EUR), ncol = 1)
   PIU.LOSS[eur.pulp,] <- PIU.PAPER.LOSS
@@ -224,7 +226,7 @@ HwpModel.Sankey.fcn <- function(harv, bfcf, tpr, ppr, ratio_cat, ccf_conversion,
   dp_matrix <- sweep(eu_matrix, MARGIN = 1, PIU.LOSS, `*`)    # Multiply the eu_matrix by the loss vector to create the discarded products matrix (dp_array).
   dp_matrix[eur.fuel,  ] <- 0            # Removing fuel wood from the dp_matrix because it is assumed burned in the given year (no discard). 
   
-
+  
   # Need to develop an array where the products in use take into account the new products and the half-life of earlier products
   nonPIU.loss <- 1.0 - PIU.LOSS
   nonPIU.loss[eur.fuel] <- 1                 # Again, no PIU change for pulp or fuel wood
@@ -252,7 +254,7 @@ HwpModel.Sankey.fcn <- function(harv, bfcf, tpr, ppr, ratio_cat, ccf_conversion,
   
   ###### Initiating Discarded Products fates  ######
   
-
+  
   # Setting up the individual values for discard - burned/recovered/composted/landfills/dumps by year and paper/wood type
   dec.prop <- DiscardProd.s.fcn("DEC", discard.fates, d.yrs)
   burn.prop <- DiscardProd.s.fcn("BWoEC", discard.fates, d.yrs)

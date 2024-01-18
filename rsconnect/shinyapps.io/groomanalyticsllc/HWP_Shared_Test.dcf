@@ -5,9 +5,7 @@ account: groomanalyticsllc
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 5760495
-bundleId: 6062467
+bundleId: 8155944
 url: https://groomanalyticsllc.shinyapps.io/HWP_Shared_Test/
-when: 1656713495.01413
-lastSyncTime: 1656713495.01414
 asMultiple: FALSE
 asStatic: FALSE
