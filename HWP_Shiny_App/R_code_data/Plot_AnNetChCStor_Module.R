@@ -200,7 +200,7 @@ plot_AnNetChCStor_Server <- function(id, hwp.dt) {
         }
         t.y <- y.axis.fcn(t.y.t3$mmtc.y, F)
         
-        
+        #browser()
         p <- ggplot(data = t3, aes(Year, mmtc, fill = pool)) + 
           geom_col(position = "stack") +  
           geom_hline(yintercept = 0) +

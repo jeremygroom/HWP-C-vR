@@ -41,8 +41,8 @@ y.axis.fcn <- function(y.values, div.1m) {  # y values, divide by 1m (1e6)? (T/F
   yrange <- range(y.values/j)
   abs.yrange <- yrange[2] - yrange[1]
   breaks.y <- {
-    if (abs.yrange < 0.5) 0.1 else 
-      if (abs.yrange >= 0.5 & abs.yrange < 3) 0.5 else
+    if (abs.yrange < 1) 0.1 else 
+      if (abs.yrange >= 1 & abs.yrange < 3) 0.5 else
         if (abs.yrange >= 3 & abs.yrange < 6) 1 else
           if (abs.yrange >= 6 & abs.yrange < 20) 2 else
             if (abs.yrange >= 20 & abs.yrange < 50) 5 else 
