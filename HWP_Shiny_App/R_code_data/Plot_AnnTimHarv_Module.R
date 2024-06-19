@@ -120,6 +120,10 @@ plot_AnnTimHarv_Server <- function(id, hwp.dt) {
                           "Timber Product Output (BBF)")
       #if (input$ann.cumu == "2") browser()
       
+      # Setting up intervals for X labels
+      yr.sep <- round(length(seq(hwp.data$MIN.PLOT.YR, hwp.data$MAX.PLOT.YR, by = 10))/10, ) * 10
+      
+      
      if (ncol(hwp.data$harv.hwp) > 2) {  # If ownership = more than just Total
         f1.c <- t(apply(hwp.data$eu_array, MAR = c(2, 3), sum))  # Finding sum of EU categories by year and ownership
         f1.c <- data.frame(f1.1$years, f1.c)
@@ -162,7 +166,7 @@ plot_AnnTimHarv_Server <- function(id, hwp.dt) {
         p <-  ggplot(data2, aes(years, get(use.value), fill = Ownership)) + 
           scale_fill_viridis(discrete = T, 
                              begin = 1, end = 0) +
-          scale_x_continuous(breaks = seq(hwp.data$MIN.PLOT.YR, hwp.data$MAX.PLOT.YR, by = 10), limits = c(hwp.data$MIN.PLOT.YR, hwp.data$MAX.PLOT.YR)) +
+          scale_x_continuous(breaks = seq(hwp.data$MIN.PLOT.YR, hwp.data$MAX.PLOT.YR, by = yr.sep), limits = c(hwp.data$MIN.PLOT.YR, max(data2$years))) +
           scale_y_continuous(breaks = seq(0, y1.lims$max.y, by = y1.lims$breaks.y), limits = c(0, y1.lims$max.y), expand = c(0, 0)) +
           labs(y = y.lab.sel, x = "Harvest Year", title =  if (input$action == 0) title.adj() else input$change_title) + 
           theme_bw() +
@@ -193,7 +197,7 @@ plot_AnnTimHarv_Server <- function(id, hwp.dt) {
 
         p1 <- ggplot(data1, aes(years, get(use.value))) + 
           geom_line(linewidth = 0.75) +
-          scale_x_continuous(breaks = seq(hwp.data$MIN.PLOT.YR, hwp.data$MAX.PLOT.YR, by = 10), limits = c(hwp.data$MIN.PLOT.YR, hwp.data$MAX.PLOT.YR)) +
+          scale_x_continuous(breaks = seq(hwp.data$MIN.PLOT.YR, hwp.data$MAX.PLOT.YR, by = 10), limits = c(hwp.data$MIN.PLOT.YR, max(data1$years))) +
           scale_y_continuous(breaks = seq(0, y1.lims$max.y, by = y1.lims$breaks.y), limits = c(0, y1.lims$max.y), expand = c(0, 0)) +
           labs(y = y.lab.sel, x = "Harvest Year", title =  if (input$action == 0) title.adj() else input$change_title) + 
           theme_bw() +

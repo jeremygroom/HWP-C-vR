@@ -42,3 +42,4 @@ N.ITER <- hwp.model.options$N.ITER[1]    # Number of MC iterations.  Select fewe
 R <- hwp.model.options$R[1]              #  Target (Pearson's) correlation coefficient  (default = 0.5)
 OPT.START.VAL <- hwp.model.options$OPT.START.VAL[1]  # Optimization starting value for determining triangular distribution endpoints.  (default = 0.5)
 MC.ARRAY.OUT <- hwp.model.options$MC.ARRAY.OUT[1]   # True/False: Should the MC run arrays be saved? (default = TRUE)
+MC.CI.REPORT <- hwp.model.options$MC.CI.REPORT[1]   # MC reporting confidence interval (default = 90%)

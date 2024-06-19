@@ -145,6 +145,8 @@ plot_CStorOwn_Server <- function(id, hwp.dt, file.loc) {
                #general.group = 0)
       f4.1$swds[grep("SWDS", f4.1$OwnerGroup)] <- 1
 
+      # Setting up intervals for X labels
+      yr.sep <- round(length(seq(hwp.data$MIN.PLOT.YR, hwp.data$MAX.PLOT.YR, by = 10))/10, ) * 10
       
             #f4.1$general.group <- rep(1:half.f4, nrow(f4.1)/half.f4)
       max.y <- y.axis.fcn(apply(f4.groups2[,2:ncol(f4.groups2)], 1, sum), T)  # Here the code determines y-axis height.  I keep this constant across "pool number" for comparison's sake.
@@ -176,12 +178,12 @@ plot_CStorOwn_Server <- function(id, hwp.dt, file.loc) {
       y.lab.cc <- expression("Tg C"*O[2]*e)
       max.y <- y.axis.fcn(apply(f4.groups2[,2:ncol(f4.groups2)], 1, sum) * 44/12, T)
     }  
-      
+      #browser()
       # Plotting
       gg.x <- ggplot(data = f4.1, aes(years, C/1e6, fill = factor(OwnerGroup, levels = ownership.order))) + 
         geom_area() + 
         geom_hline(yintercept = 0) +
-        scale_x_continuous(breaks = seq(hwp.data$MIN.PLOT.OWNR.YR, hwp.data$MAX.PLOT.YR, by = 10), limits = c(hwp.data$MIN.PLOT.OWNR.YR, hwp.data$MAX.PLOT.YR), minor_breaks = NULL) +
+        scale_x_continuous(breaks = seq(hwp.data$MIN.PLOT.OWNR.YR, hwp.data$MAX.PLOT.YR, by = yr.sep), limits = c(hwp.data$MIN.PLOT.OWNR.YR, max(f4.1$years)), minor_breaks = NULL) +
         scale_y_continuous(breaks = seq(0, max.y$max.y ,by = max.y$breaks.y), limits = c(0, max.y$max.y), expand = c(0, 0)) +
         scale_fill_manual(name = "", labels = f4.labels,
                           values = hex_codes.use) + 

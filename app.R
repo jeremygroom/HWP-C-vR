@@ -5,7 +5,7 @@
 #
 
 
-renv::restore()   # Begin here to download appropriate package versions.  This line can be removed or commented out after being run the first time.
+#renv::restore()   # Begin here to download appropriate package versions.  This line can be removed or commented out after being run the first time.
 
 library(packrat)
 library(rsconnect)
@@ -28,12 +28,13 @@ library(jpeg)
 library(shinybusy)   # Busy signal for Monte Carlo simulation run (ModelRunPage.R)
 library(vroom)
 
-renv::snapshot()     # If any of the libraries are updated and the project works, run this code to preserve the new library changes.
+#renv::snapshot()     # If any of the libraries are updated and the project works, run this code to preserve the new library changes.
 
 
 # Load data and general functions
 file.loc <- "HWP_Shiny_App/R_code_data/"
 source(paste0(file.loc, "global.r"))
+HWP.VERSION <- "HWP Version 1.1.0"
 
 #
 
@@ -70,6 +71,7 @@ HWPapp <- function() {
     
     dashboardSidebar(
       sidebarMenu(
+        menuItem(h5(HWP.VERSION)),
         selectInput("Dataset", selected = "California",
                     label = "Select a data set", choices = state.choices),
         menuItem(h5("Home"), tabName = "home"),

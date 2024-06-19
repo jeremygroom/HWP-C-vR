@@ -229,7 +229,7 @@ first.eu.mc <- first.eu_array[, N.OWNERSHIP]   # Simplifying earlier values alre
 ###### MC DRAWS - MC ALTERATIONS TO EACH VARIABLE  ######
 
 
-# Finding the triangular distribution endpoints.  Editing user-defined triangular distributions for Monte Carlo from the CSV "MonteCarloDistrParameters.csv"
+# Finding the triangular distribution endpoints.  Editing user-defined triangular distributions for Monte Carlo from the template tab "MonteCarloValues"
 mc.adj.hwp$b <- mc.adj.hwp$a  <- 0
 mc.adj.hwp[,10:11] <- matrix(unlist(mapply(ab.boundaries.fcn, targ = mc.adj.hwp$MinCI, start.val = 0.5, ci = mc.adj.hwp$CI)), nrow(mc.adj.hwp), 2, byrow = T)
 

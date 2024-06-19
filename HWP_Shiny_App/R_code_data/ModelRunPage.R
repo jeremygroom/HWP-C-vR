@@ -5,8 +5,10 @@ input1UI <- function(id) {
     fluidRow(box(
       #status = "success",   # makes the top of the box green.  
       column(8, offset = 1, h1(id = "main-header", "Upload Data")))),
+    fluidRow(column(6, offset = 1, h4(tags$p("Note: New data file requirements 6/20/2024.  See ", style = "color:#22a783", a("Version Changes",  
+                                                  href = "https://jeremygroom.github.io/HWP-vR-Documentation/vc.html"), " section in the documentation.")))),
     shinyjs::useShinyjs(),     # For enable/disable buttons to work, MUST have this call here.
-    fluidRow(column(6, offset = 1, fileInput(NS(id, "file1"), label = h3("Select model data file for input"), accept = ".xlsx", multiple = FALSE, buttonLabel = "Browse...", placeholder = "No file selected"))),
+    fluidRow(column(6, offset = 1, fileInput(NS(id, "file1"), label = h3("Select data file for input"), accept = ".xlsx", multiple = FALSE, buttonLabel = "Browse...", placeholder = "No file selected"))),
     fluidRow(column(4, offset = 1, actionButton(NS(id, "runQA"), label = "Run data file quality assurance")), 
              column(3, tableOutput(NS(id, "head"))),
              column(3, uiOutput(NS(id, "qa.download")))),
@@ -265,7 +267,7 @@ input1Server <- function(id, hwp.dt, file.loc) {
                         ratio_cat.hwp = ratio_cat.hwp, ccf_conversion.hwp = ccf_conversion.hwp, eur.hwp = eur.hwp,  # data frames for Sankey 
                         eu_half.lives.hwp = eu_half.lives.hwp, discard.fates.hwp = discard.fates.hwp, discard.hl.hwp = discard.hl.hwp,    # data frames for Sankey
                         N.ITER = N.ITER, mc_iter_results = mc_iter_results, mc_plot = mc_plot, # Monte Carlo values (null)
-                        C.names  = C.names, mc_PoolsTotalPlot = mc_PoolsTotalPlot)                                # Monte Carlo values (null)
+                        C.names  = C.names, mc_PoolsTotalPlot = mc_PoolsTotalPlot, MC.CI.REPORT = MC.CI.REPORT)                             
       
       hwp.new <- append(hwp.new, const.lst)
       
@@ -393,8 +395,7 @@ input1Server <- function(id, hwp.dt, file.loc) {
       
       ## Loading the new data for the MC run:
       new.state.data <- state.data[[3]]
-      #browser()
-      
+
       y <- Sys.time()  # At the end of this section the app reports (behind the scenes) how long the process takes.  
       show_modal_spinner(spin = "trinity-rings", text = paste0("The Monte Carlo process is underway.  This process is expected to take ", 
                                                                round(0.0044 * new.state.data$N.ITER * new.state.data$N.YEARS / 60, 1), " minutes")) # show the modal window
@@ -403,47 +404,49 @@ input1Server <- function(id, hwp.dt, file.loc) {
       ## For the MC, need to define HWP outputs from the new data:
       model.outputs <- new.state.data  
       source(paste0(file.loc, "HWP_Output_Prep.R"), local = TRUE)
-      
-      
+
       ## RUN MONTE CARLO SCRIPT ##
-      source(paste0(file.loc, "MC_Code.R"), local = TRUE)
       
+      source(paste0(file.loc, "MC_Code.R"), local = TRUE)
       
       ## MAKE USE OF MONTE CARLO OUTPUT
       
       ## Evaluating convergence of last year's results with the given number of iterations and burn-in period
       MCout.lastyr <- MCout[N.YEARS, , 3] + MCout[N.YEARS, , 4]
       
-      cum_mean <- cum_se <- cum05 <- cum95 <- rep(0, N.ITER)
+      lci.prob <- (1 - hwp.data$HWP_MODEL_OPTIONS$MC.CI.REPORT) / 2
+      uci.prob <- 1 - lci.prob
+      
+      cum_mean <- cum_se <- cumLCI <- cumUCI <- rep(0, N.ITER)
       for (i in 1:N.ITER) {
         cum_mean[i] <- mean(MCout.lastyr[1:i])
         cum_se[i] <- sd(MCout.lastyr[1:i])/sqrt(i)
-        cum05[i] <- quantile(MCout.lastyr[1:i], probs = 0.05)
-        cum95[i] <- quantile(MCout.lastyr[1:i], probs = 0.95)
+        cumLCI[i] <- quantile(MCout.lastyr[1:i], probs = lci.prob)
+        cumUCI[i] <- quantile(MCout.lastyr[1:i], probs = uci.prob)
       }
       
-      mc_iter_results <- tibble(iter = 1:N.ITER, mean = cum_mean, se = cum_se, ci05 = cum05, ci95 = cum95) %>%
+      mc_iter_results <- tibble(iter = 1:N.ITER, mean = cum_mean, se = cum_se, ciLCI = cumLCI, ciUCI = cumUCI) %>%
         filter(iter != 1) %>%
         pivot_longer(cols = 2:5, names_to = "stat", values_to = "C")
       
       
       #####  Finding MC summary stats for the four categories of general output ###
       
-      mean_MC <- ci05_MC <- ci95_MC <- data.frame(eec = rep(0, N.YEARS), ewoec = rep(0, N.YEARS), 
+      mean_MC <- ciLCI_MC <- ciUCI_MC <- data.frame(eec = rep(0, N.YEARS), ewoec = rep(0, N.YEARS), 
                                                   swdsC = rep(0, N.YEARS), pu = rep(0, N.YEARS))
       for (i in 1:4) {
         mean_MC[,i] <- apply(MCout[, , i], 1, mean)
-        ci05_MC[, i] <- apply(MCout[, , i], 1, quantile, probs = 0.05)  # Obtaining the 90% CI empirically
-        ci95_MC[, i] <- apply(MCout[, , i], 1, quantile, probs = 0.95)
+        ciLCI_MC[, i] <- apply(MCout[, , i], 1, quantile, probs = lci.prob)  # Obtaining the CI empirically
+        ciUCI_MC[, i] <- apply(MCout[, , i], 1, quantile, probs = uci.prob)
       }
       
       mean_MC$Year <- years
       mean_MC2 <- mean_MC %>% pivot_longer(cols = 1:4, names_to = "Type.M", values_to = "Means")
-      ci05_MC2 <- ci05_MC %>% pivot_longer(cols = 1:4, names_to = "Type.lci", values_to = "lci")
-      ci95_MC2 <- ci95_MC %>% pivot_longer(cols = 1:4, names_to = "Type.uci", values_to = "uci")
+      ciLCI_MC2 <- ciLCI_MC %>% pivot_longer(cols = 1:4, names_to = "Type.lci", values_to = "lci")
+      ciUCI_MC2 <- ciUCI_MC %>% pivot_longer(cols = 1:4, names_to = "Type.uci", values_to = "uci")
       
       
-      mc_plot <- cbind(mean_MC2, ci05_MC2[, 2], ci95_MC2[, 2]) %>%
+      mc_plot <- cbind(mean_MC2, ciLCI_MC2[, 2], ciUCI_MC2[, 2]) %>%
         mutate(
           pct_lci = lci/Means,
           pct_uci = uci/Means)
@@ -456,13 +459,12 @@ input1Server <- function(id, hwp.dt, file.loc) {
       MC_MMTC <- MCout[, , 3] + MCout[, , 4]  # Summing SWDS and Products in Use values for each iteration.
       
       mean_MMTC <- apply(MC_MMTC, 1, mean)
-      ci05_MMTC <- apply(MC_MMTC, 1, quantile, probs = 0.05)  # Obtaining the 90% CI empirically.
-      ci95_MMTC <- apply(MC_MMTC, 1, quantile, probs = 0.95)
+      ciLCI_MMTC <- apply(MC_MMTC, 1, quantile, probs = lci.prob)  # Obtaining the CI empirically.
+      ciUCI_MMTC <- apply(MC_MMTC, 1, quantile, probs = uci.prob)
       
-      mc_PoolsTotalPlot <- tibble(Year = START.YEAR:END.YEAR, Mean = mean_MMTC/1e6, lci = ci05_MMTC/1e6, uci = ci95_MMTC/1e6)
+      mc_PoolsTotalPlot <- tibble(Year = START.YEAR:END.YEAR, Mean = mean_MMTC/1e6, lci = ciLCI_MMTC/1e6, uci = ciUCI_MMTC/1e6)
       #write_csv(mc_PoolsTotalPlot, "MC_Output/MC_Tables/MC_PIU_Plus_SWDS.csv")
-      
-      
+
       ## Now updating the MC values for the new data set ##
       
       state.data[[3]]$mc_iter_results <<- mc_iter_results 

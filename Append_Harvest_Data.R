@@ -11,7 +11,7 @@ library(writexl)
 library(openxlsx)  
 
 ### -- Constants -- ###
-ORIG.DATA.FILE <- "Oregon_Inputs_HWP_Model_alt.xlsx"    # Original data file
+ORIG.DATA.FILE <- "Oregon_Inputs_HWP_Model.xlsx"    # Original data file
 NEW.DATA.FILE <- "Oregon_MBF_2019.xlsx"            # Excel file with harvest data (must be Excel, not CSV)
 OUT.DATA.FILE <- "Oregon_Inputs_HWP_Modelv2.xlsx"  # The output file name
 

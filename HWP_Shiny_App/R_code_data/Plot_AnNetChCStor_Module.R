@@ -141,6 +141,10 @@ plot_AnNetChCStor_Server <- function(id, hwp.dt) {
       t2.sel <- data.frame(labs = t2.labels, pools = factor(levels(t2$pool), level = levels(t2$pool)))
       
       net.line.color <- "#3CB371"#008B00"
+
+        # Setting up intervals for X labels
+      yr.sep <- round(length(seq(hwp.data$MIN.PLOT.YR, hwp.data$MAX.PLOT.YR, by = 10))/10, ) * 10
+      
       
       if (input$fig.select == "1") {
         
@@ -149,7 +153,7 @@ plot_AnNetChCStor_Server <- function(id, hwp.dt) {
         
         t3.leg <- data.frame(labs.sel = c("Solid Waste\nDisposal Sites", "Products in Use"),
                              pool.sel  = c("SWDSchange", "PUchange"),
-                             hex.sel  = c("#7801A8FF", "#B42E8DFF"))
+                             hex.sel  = c("#B42E8DFF", "#7801A8FF"))
         
         
         t.y.t3 <- t3 %>% group_by(Year) %>% summarize(mmtc.y.pos = sum(mmtc[mmtc > 0]), mmtc.y.neg = sum(mmtc[mmtc <= 0])) %>%
@@ -164,7 +168,7 @@ plot_AnNetChCStor_Server <- function(id, hwp.dt) {
         p <- ggplot(data = t3, aes(Year, mmtc, fill = pool)) + 
           geom_col(position = "stack") +  
           geom_hline(yintercept = 0) +
-          scale_x_continuous(breaks = seq(hwp.data$MIN.PLOT.YR, hwp.data$MAX.PLOT.YR, by = 10), minor_breaks = NULL) +
+          scale_x_continuous(breaks = seq(hwp.data$MIN.PLOT.YR, hwp.data$MAX.PLOT.YR, by = yr.sep), minor_breaks = NULL) +
           scale_y_continuous(breaks = seq(t.y$min.y, t.y$max.y ,by = t.y$breaks.y), limits = c(t.y$min.y, t.y$max.y), expand = c(0, 0)) +
           scale_fill_manual(values = t3.leg$hex.sel, breaks = t3.leg$pool.sel, labels = t3.leg$labs.sel, name = element_blank()) +  
           labs(y = y.lab.cc, x = NULL, 
@@ -204,7 +208,7 @@ plot_AnNetChCStor_Server <- function(id, hwp.dt) {
         p <- ggplot(data = t3, aes(Year, mmtc, fill = pool)) + 
           geom_col(position = "stack") +  
           geom_hline(yintercept = 0) +
-          scale_x_continuous(breaks = seq(hwp.data$MIN.PLOT.YR, hwp.data$MAX.PLOT.YR, by = 10), minor_breaks = NULL) +
+          scale_x_continuous(breaks = seq(hwp.data$MIN.PLOT.YR, hwp.data$MAX.PLOT.YR, by = yr.sep), minor_breaks = NULL) +
           scale_y_continuous(breaks = seq(t.y$min.y, t.y$max.y ,by = t.y$breaks.y), limits = c(t.y$min.y, t.y$max.y), expand = c(0, 0)) +
           scale_fill_manual(values = t3.leg$hex.sel, breaks = t3.leg$pool.sel, labels = t3.leg$labs.sel, name = element_blank()) +  
           labs(y = y.lab.cc, x = NULL, 

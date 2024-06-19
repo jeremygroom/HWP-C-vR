@@ -49,7 +49,9 @@ plot_MCest_UI <- function(id) {
 plot_MCest_Server <- function(id, hwp.dt, file.loc) {
   
   moduleServer(id, function(input, output, session) {
-    
+
+    state.data.sel <- reactive(state.data[[which(state.choices == hwp.dt())]]) 
+        
     counter <- reactiveValues(countervalue = 0)  # Setting a counter to register if plots are switched. If they are, the titles revert to original titles
     
     observeEvent(input$action, {  # If the user wants to change the title the counter changes to one and the figure's title can be changed.
@@ -62,8 +64,8 @@ plot_MCest_Server <- function(id, hwp.dt, file.loc) {
           where = "afterEnd",
           textInput(NS(id, "change_titleMC"), label = h4("Enter figure title"), 
                     value = switch(as.numeric(input$select),
-                                   "Monte Carlo mean (yellow line) and 90% confidence intervals\n(black shading) for carbon in storage and emissions pools",
-                                   "Monte Carlo mean (yellow line) and 90% confidence intervals (black shading) for carbon in storage pools combined (products in use and solid waste disposal sites)",
+                                   paste0("Monte Carlo mean (yellow line) and ", 100 * state.data.sel()$MC.CI.REPORT, "% confidence intervals\n(black shading) for carbon in storage and emissions pools"),
+                                          paste0("Monte Carlo mean (yellow line) and ", 100 * state.data.sel()$MC.CI.REPORT, "% confidence intervals (black shading) for carbon in storage pools combined (products in use and solid waste disposal sites)"),
                                    NULL
                     )))#, 
         #width = "700px"))
@@ -83,7 +85,7 @@ plot_MCest_Server <- function(id, hwp.dt, file.loc) {
     })
     
     
-    state.data.sel <- reactive(state.data[[which(state.choices == hwp.dt())]])  
+ 
     
     observe({  # If no ownership data present, the "plotselect" and download buttons are disabled. 
       #### NOTE: The ID used for disabling the download button required a combination of two IDs, one for the 
@@ -117,7 +119,7 @@ plot_MCest_Server <- function(id, hwp.dt, file.loc) {
         plot.mc <- ggplot_pic(img)  # see PlotFunctions1.r
         
       } else if (is.null(hwp.data$mc_iter_results) == FALSE & plot.type == 1) {
-        title.use <- "Monte Carlo mean (yellow line) and 90% confidence intervals (black shading) for carbon in storage and emission pools"
+        title.use <- paste0("Monte Carlo mean (yellow line) and ", 100 * state.data.sel()$MC.CI.REPORT, "% confidence intervals (black shading) for carbon in storage and emission pools")
         
         plot.mc <- ggplot(hwp.data$mc_plot, aes(Year, Means/1e6)) +
           geom_ribbon(aes(ymin = lci/1e6, ymax = uci/1e6), ) +
@@ -126,10 +128,11 @@ plot_MCest_Server <- function(id, hwp.dt, file.loc) {
           labs(x = NULL, y = y.lab.cc, 
                title = if (counter$countervalue == 0) wrapper(title.use, 75) else wrapper(input$change_titleMC, 75)) + # See functions for 'wrapper'
           #theme_bw() +
-          theme(text = element_text(size = 20))
+          theme(text = element_text(size = 20),
+                axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
         
       } else if (is.null(hwp.data$mc_iter_results) == FALSE & plot.type == 2) {
-        title.use2 <- "Monte Carlo mean (yellow line) and 90% confidence intervals (black shading) for\ncarbon in storage pools combined (products in use and solid waste disposal sites)"
+        title.use2 <- paste0("Monte Carlo mean (yellow line) and ", 100 * state.data.sel()$MC.CI.REPORT, "% confidence intervals (black shading) for\ncarbon in storage pools combined (products in use and solid waste disposal sites)")
         
         
         plot.mc <- ggplot(hwp.data$mc_PoolsTotalPlot, aes(Year, Mean)) +
@@ -147,7 +150,9 @@ plot_MCest_Server <- function(id, hwp.dt, file.loc) {
         title.use3 <- paste0("Convergence evaluation with ", hwp.data$N.ITER, " iterations for products in use + solid waste disposal sites, ", end.yr)
         
         hwp.data$mc_iter_results$facet.labs <- as.character(sapply(hwp.data$mc_iter_results$stat, switch, 
-               "mean" = "Mean", "se" = "Standard Error", "ci95" = "90% Confidence Interval, Upper Limit", "ci05" = "90% Confidence Interval, Lower Limit"))
+               "mean" = "Mean", "se" = "Standard Error", 
+               "ciUCI" = paste0(100 * state.data.sel()$MC.CI.REPORT, "% Confidence Interval, Upper Limit"), 
+               "ciLCI" = paste0(100 * state.data.sel()$MC.CI.REPORT, "% Confidence Interval, Lower Limit")))
         
         hwp.data$mc_iter_results$C <- hwp.data$mc_iter_results$C/1e6
         plot.mc <- ggplot(hwp.data$mc_iter_results, aes(iter, C)) +

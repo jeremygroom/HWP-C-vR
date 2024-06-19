@@ -5,7 +5,8 @@ account: groomanalyticsllc
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 6581525
-bundleId: 8188504
+bundleId: 8764938
 url: https://groomanalyticsllc.shinyapps.io/HWP-C-vR/
 asMultiple: FALSE
 asStatic: FALSE
+ignoredFiles: HWP Data|HWP_Stand_Alone_Files

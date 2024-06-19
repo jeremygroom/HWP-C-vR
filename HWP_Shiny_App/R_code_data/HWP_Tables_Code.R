@@ -159,7 +159,7 @@ t2 <- left_join(t2.fuel, t2.short, by = "Years") %>% left_join(t2.med, by = "Yea
     colnames(swdsC.sum_array) <- paste0(ownership.names[1:N.OWNERSHIP - 1], "_swds_TgC")
     
     #  sum.df <- tibble()
-    sum.df2 <- tibble(Years = yearsTPO, eec.sum_array, ewoec.sum_array, pu.sum_array, swdsC.sum_array)
+    sum.df2 <- tibble(Years = yearsUse, eec.sum_array, ewoec.sum_array, pu.sum_array, swdsC.sum_array)
     
     sum.df3 <- sum.df2
     sum.df3[,2:((ncol(sum.df2) - 1) / 2 + 1)] <- apply(sum.df2[,2:((ncol(sum.df2) - 1) / 2 + 1)], 2, cumsum)

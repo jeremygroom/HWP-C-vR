@@ -95,6 +95,9 @@ plot_HarvFuncLS_Server <- function(id, hwp.dt) {
       
       plot.type <- as.numeric(input$select)
       
+      # Setting up intervals for X labels
+      yr.sep <- round(length(seq(hwp.data$MIN.PLOT.YR, hwp.data$MAX.PLOT.YR, by = 10))/10, ) * 10
+      
       
       if (plot.type == 1) {
         y.sml3 <- sml3$sumMMTC / 1e6
@@ -113,13 +116,13 @@ plot_HarvFuncLS_Server <- function(id, hwp.dt) {
       
       title.sml3 <- if (input$action == 0) title.sml3 else input$change_title_hfls
       
-      
+      #browser()
       ggplot(sml3, aes(as.numeric(years), y.sml3, fill = ShortMedLong)) +
         geom_area(alpha = 0.6, color = "white") + 
         theme_bw() + 
         scale_fill_viridis(discrete = T,begin = 1, end = 0, 
                            labels = c("Fuel (burned immediately", "Short (1-6 years)", "Medium (7-30 years)", "Long (31+ years)")) +
-        scale_x_continuous(breaks = seq(hwp.data$MIN.PLOT.YR, hwp.data$MAX.PLOT.YR, by = 10), limits = c(hwp.data$MIN.PLOT.YR, hwp.data$MAX.PLOT.YR)) +
+        scale_x_continuous(breaks = seq(hwp.data$MIN.PLOT.YR, hwp.data$MAX.PLOT.YR, by = yr.sep), limits = c(hwp.data$MIN.PLOT.YR, max(as.numeric(sml3$years)))) +
         scale_y_continuous(breaks = breaks.sml3, limits = limits.sml3, expand = c(0, 0)) +
         labs(x = "Harvest Year", y = yaxis.lab, title = wrapper(title.sml3, 70)) +  #, fill = "Product in\nuse halflife") +
         guides(fill = guide_legend(title = element_blank(), nrow = 1, byrow = T, override.aes = list(size = 1))) +

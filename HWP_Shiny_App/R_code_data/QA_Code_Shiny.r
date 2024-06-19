@@ -93,9 +93,29 @@ mc.adj.hwp <- hwp.data$MonteCarloValues
 
 ## Setting up the data frames "terminate" and "error report".  The data frame "terminate" saves instances that should stop the process from proceeding.
 #   The data frame "error report" will contain hopefully useful messages for users so that they know what to fix. 
-terminate <- error.report <- data.frame(item.id = 1:7, harv_hwp = rep(0, 7), bfcf_hwp = rep(0, 7), tpr_hwp = rep(0, 7), ppr_hwp = rep(0, 7), 
+terminate <- error.report <- data.frame(item.id = 1:7, mc_report_hwp = rep(0, 7), harv_hwp = rep(0, 7), bfcf_hwp = rep(0, 7), tpr_hwp = rep(0, 7), ppr_hwp = rep(0, 7), 
                                         ratio_cat_hwp = rep(0, 7), ccf_conversion_hwp = rep(0, 7), eur_hwp = rep(0, 7), eu_half_lives_hwp = rep(0, 7),
                                         discard_fates_hwp = rep(0, 7), discard_hl_hwp = rep(0, 7), mc_adj_hwp = rep(0, 7))
+
+# QA checks for mc_report.  
+mc_report_hwp <- tC.read("HWP_MODEL_OPTIONS"); mc.report.hwp <- mc_report_hwp$tble; terminate$mc_report_hwp[1] <- mc_report_hwp$term; error.report$mc_report_hwp[1] <- mc_report_hwp$msg
+mc_report_true1 <- is.data.frame(mc.report.hwp)
+
+if (mc_report_true1) {
+  if ("MC.CI.REPORT" %in% names(mc.report.hwp) == TRUE) {
+    error.report$mc_report_hwp[2] <- "Column name MC.CI.REPORT exists."} else {
+      error.report$mc_report_hwp[2] <- "Column name MC.CI.REPORT DOES NOT exist."  
+      terminate$mc_report_hwp[2] <- 1}}
+
+if (all(terminate$mc_report_hwp[2] == 0, is.numeric(mc.report.hwp$MC.CI.REPORT) == TRUE)) {
+  error.report$mc_report_hwp[3] <- "MC.CI.REPORT is numeric"} else {
+    error.report$mc_report_hwp[3] <- "MC.CI.REPORT IS NOT numeric" 
+    terminate$mc_report_hwp[3] <- 1}
+
+if (all(terminate$mc_report_hwp[3] == 0, mc.report.hwp$MC.CI.REPORT[1] > 0, mc.report.hwp$MC.CI.REPORT[1] < 1) == TRUE) {
+  error.report$mc_report_hwp[3] <- "MC.CI.REPORT is greater than zero and less than one"} else {
+    error.report$mc_report_hwp[3] <- "MC.CI.REPORT _IS NOT_ greater than zero and less than one"
+    terminate$mc_report_hwp[3] <- 1}
 
 # QA checks for harv.hwp.  Three checks.
 
@@ -431,14 +451,12 @@ if (mc_adj_true1 & terminate$mc_adj_hwp[4] == 0) {
       terminate$mc_adj_hwp[7] <- 1 } 
   }
   
-  
-
 
 
 ###### Consolidating results, testing to see if process should be halted (any "terminate" codes of 1),saving the Error_Report.csv file
-file.xwalk <- tibble(QA.name = c("bfcf_hwp", "ccf_conversion_hwp", "discard_fates_hwp", "discard_hl_hwp", "eu_half_lives_hwp", 
+file.xwalk <- tibble(QA.name = c("mc_report_hwp", "bfcf_hwp", "ccf_conversion_hwp", "discard_fates_hwp", "discard_hl_hwp", "eu_half_lives_hwp", 
                                  "eur_hwp", "harv_hwp", "mc_adj_hwp", "ppr_hwp", "ratio_cat_hwp", "tpr_hwp"),
-                     "Worksheet Name" = c("BFCF", "CCF_MT_Conversion", "DiscardFates", "Discard_HalfLives", "EU_HalfLives", "EndUseRatios", 
+                     "Worksheet Name" = c("HWP_MODEL_OPTIONS", "BFCF", "CCF_MT_Conversion", "DiscardFates", "Discard_HalfLives", "EU_HalfLives", "EndUseRatios", 
                                           "Harvest_BF", "MonteCarloValues", "PrimaryProdRatios", "RatioCategories", "TimberProdRatios"))
 
 #error.report[, 2:ncol(error.report)] <- as.character(error.report[, 2:ncol(error.report)])
@@ -455,7 +473,7 @@ joint.err.term.rept <- left_join(terminate.save, error.report.save, by = c("item
   filter(Comments != "0")
 
 
-QA_PASS <- if (sum(terminate[, 2:12]) > 0) FALSE else TRUE
+QA_PASS <- if (sum(terminate[, 2:13]) > 0) FALSE else TRUE
 
 #write_csv(joint.err.term.rept, "QA/Error_Report.csv")
 
@@ -468,5 +486,4 @@ QA_PASS <- if (sum(terminate[, 2:12]) > 0) FALSE else TRUE
 
 #if (QA_PASS == FALSE) quit(save = "ask", runLast = TRUE)  # If any terminate = 1, quit R
 
-
-
+#browser()
