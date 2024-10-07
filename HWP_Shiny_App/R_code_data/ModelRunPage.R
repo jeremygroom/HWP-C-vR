@@ -481,6 +481,7 @@ input1Server <- function(id, hwp.dt, file.loc) {
     ## -- Downloading MC tables -- ##
     observeEvent(mc.out(), {
       updateTextInput(session, "HWPcomplete", value = "Monte Carlo is complete!")
+     # browser()                     # Uncomment here when replacing CA or OR default files. 
       output$mc.tables = renderUI(                                          # Download button appears after HWP model ran.
         downloadButton(NS(id, "mc.tables01"), label = "Download Monte Carlo Tables"))  # Had to separate output$hwp.cables from output$hwp.tables01 otherwise Shiny is confused.
     }) 
