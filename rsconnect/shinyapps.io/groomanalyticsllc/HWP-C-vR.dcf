@@ -5,8 +5,7 @@ account: groomanalyticsllc
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 6581525
-bundleId: 9193518
+bundleId: 9315394
 url: https://groomanalyticsllc.shinyapps.io/HWP-C-vR/
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: Append_Harvest_Data.R|HWP_Stand_Alone_Code.R|HWP_Stand_Alone_Files/QAQC_Reports/Error_Report.csv|HWP_Stand_Alone_Files/Standalone_R_files/MC_Tables.R|HWP_Stand_Alone_Files/Tables/MC_ComponentsSummary.csv|HWP_Stand_Alone_Files/Tables/MC_PIU_Plus_SWDS.csv|HWP Data

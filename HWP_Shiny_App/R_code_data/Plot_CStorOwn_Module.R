@@ -44,10 +44,11 @@ plot_CStorOwn_Server <- function(id, hwp.dt, file.loc) {
 
     # a reactive UI that adjusts to the number of ownerships in a given data set
     output$ownerships <- renderUI({
-      
+
       hwp.data <- state.data[[which(state.choices == hwp.dt())]]     # Note: This is passed to module server from main UI, not module UI
       ownership.names <- unique(hwp.data$harv_cf1$Source) 
       ownership.names <- ownership.names[ownership.names != "Total"]
+      ownership.names <- gsub(".", " ", ownership.names, fixed = TRUE) # Replacing periods between words with spaces.
       tagList(
         checkboxGroupInput(session$ns("ownerCheck"), label = h3("Select Ownerships"), 
                            choices = ownership.names, selected = c(ownership.names[1], ownership.names[2])) 
@@ -98,6 +99,7 @@ plot_CStorOwn_Server <- function(id, hwp.dt, file.loc) {
       hwp.data <- state.data.sel()      # Note: This is passed to module server from main UI, not module UI
       ownership.names <- unique(hwp.data$harv_cf1$Source)         # All ownership names in the data set selected
       ownership.names <- ownership.names[ownership.names != "Total"]  # ... except "Total"
+      ownership.names <- gsub(".", " ", ownership.names, fixed = TRUE)  # Replacing periods between words with spaces.
       pools_num <- input$pools_cso                                  # Pools = all (1), PIU only (2), and SWDS only (3)
       req(input$ownerCheck)
       owner.list <- input$ownerCheck                             # Checked boxes for owners

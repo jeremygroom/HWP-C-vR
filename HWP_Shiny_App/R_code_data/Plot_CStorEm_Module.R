@@ -361,9 +361,9 @@ plot_CStorEm_Server <- function(id, hwp.dt) {
                             drop = FALSE) +
           guides(fill = guide_legend(title = "Product Carbon Fate"), 
                  override.aes = list(size = 1), reverse = T) + 
-          labs(title = wrapper("Distribution of carbon from products with short (1-6 years), medium (7-30 years) and long (31+ years)
+          labs(title = if (input$action == 0) wrapper("Distribution of carbon from products with short (1-6 years), medium (7-30 years) and long (31+ years)
                                      term Products in Use (PIU) half lives and the carbon's fate in Solid Waste Disposal Sites (SWDS) and 
-                                     Emissions (E)", 70),
+                                     Emissions (E)", 70) else wrapper(input$change_title_csem, 70),
                x = NULL, y = y.lab.cc) +
           theme_bw()  + 
           theme(text = element_text(size = 20), 

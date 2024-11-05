@@ -138,7 +138,8 @@ plot_AnnTimHarv_Server <- function(id, hwp.dt) {
               f1.c <- f1.c %>%
                 #mutate(years = hwp.data$years) %>%
                 pivot_longer(2:(all_of(hwp.data$N.OWNERSHIP)), names_to = "Ownership", values_to = "values")
-              f1.c$Ownership <- factor(f1.c$Ownership, levels = hwp.data$ownership.names[1:(hwp.data$N.OWNERSHIP - 1)])
+              
+       #       f1.c$Ownership <- factor(f1.c$Ownership, levels = hwp.data$ownership.names[1:(hwp.data$N.OWNERSHIP - 1)])
               f1.c$values <- f1.c$values/1e6
               f1.c$valuesCO2e <- f1.c$values * 44/12
         
@@ -151,7 +152,7 @@ plot_AnnTimHarv_Server <- function(id, hwp.dt) {
         }
         f1.c.bbf <- f1.c.bbf %>% 
           pivot_longer(2:(hwp.data$N.OWNERSHIP), names_to = "Ownership", values_to = "values")
-        f1.c.bbf$Ownership <- factor(f1.c.bbf$Ownership, levels = hwp.data$ownership.names)
+      #  f1.c.bbf$Ownership <- factor(f1.c.bbf$Ownership, levels = hwp.data$ownership.names)
         f1.c.bbf$values <- f1.c.bbf$values/1e6
         colnames(f1.c.bbf)[1] <- "years"
       #  if (input$ann.cumu == "2") browser()
@@ -162,7 +163,12 @@ plot_AnnTimHarv_Server <- function(id, hwp.dt) {
             data1 <- f1.1.bbf
             data2 <- f1.c.bbf
           }
-
+          
+        # REmoving the period from between data label words (e.g., "Private.Ownership")
+        own.names.adj <- gsub(".", " ", hwp.data$ownership.names, fixed = TRUE)
+        data2$Ownership <- gsub(".", " ", data2$Ownership, fixed = TRUE)
+        data2$Ownership <- factor(data2$Ownership, levels = own.names.adj)
+        
         p <-  ggplot(data2, aes(years, get(use.value), fill = Ownership)) + 
           scale_fill_viridis(discrete = T, 
                              begin = 1, end = 0) +
