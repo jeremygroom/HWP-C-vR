@@ -150,9 +150,6 @@ plot_CStorOwn_Server <- function(id, hwp.dt, file.loc) {
       # Setting up intervals for X labels
       yr.sep <- round(length(seq(hwp.data$MIN.PLOT.YR, hwp.data$MAX.PLOT.YR, by = 10))/10, ) * 10
       
-            #f4.1$general.group <- rep(1:half.f4, nrow(f4.1)/half.f4)
-      max.y <- y.axis.fcn(apply(f4.groups2[,2:ncol(f4.groups2)], 1, sum), T)  # Here the code determines y-axis height.  I keep this constant across "pool number" for comparison's sake.
-
        # The values for SWDS & Products in Use
       f4.rank.df2 <- f4.rank.df %>% filter(group.name %in% owner.list)
       hex_codes.use <- f4.rank.df2$hex_codes.for.use
@@ -172,7 +169,8 @@ plot_CStorOwn_Server <- function(id, hwp.dt, file.loc) {
     f4.labels <- f4.rank.df2$labs[f4.rank.df2$swds == 1]
     ownership.order <- f4.rank.df2$cnames[f4.rank.df2$swds == 1]
     }
-
+    
+      
   y.lab.cc <- "Tg C"   # Setting the y-axis label 
       
     if (input$metrictype == "2") {  # Changes to the plot if metric is Tg CO2e
@@ -180,7 +178,12 @@ plot_CStorOwn_Server <- function(id, hwp.dt, file.loc) {
       y.lab.cc <- expression("Tg C"*O[2]*e)
       max.y <- y.axis.fcn(apply(f4.groups2[,2:ncol(f4.groups2)], 1, sum) * 44/12, T)
     }  
-      #browser()
+
+  y.max.calc <- f4.1 %>% group_by(years) %>% summarize(total.c = sum(C))
+  #f4.1$general.group <- rep(1:half.f4, nrow(f4.1)/half.f4)
+  max.y <- y.axis.fcn(y.max.calc$total.c, T)  # Here the code determines y-axis height.  I keep this constant across "pool number" for comparison's sake.
+  
+        #browser()
       # Plotting
       gg.x <- ggplot(data = f4.1, aes(years, C/1e6, fill = factor(OwnerGroup, levels = ownership.order))) + 
         geom_area() + 

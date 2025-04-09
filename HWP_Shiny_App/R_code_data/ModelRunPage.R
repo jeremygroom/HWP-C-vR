@@ -6,7 +6,7 @@ input1UI <- function(id) {
       #status = "success",   # makes the top of the box green.  
       column(8, offset = 1, h1(id = "main-header", "Upload Data")))),
     fluidRow(column(6, offset = 1, h4(tags$p("Note: New data file requirements 6/20/2024.  See ", style = "color:#22a783", a("Version Changes",  
-                                                  href = "https://jeremygroom.github.io/HWP-vR-Documentation/vc.html"), " section in the documentation.")))),
+                                                                                                                             href = "https://jeremygroom.github.io/HWP-vR-Documentation/vc.html"), " section in the documentation.")))),
     shinyjs::useShinyjs(),     # For enable/disable buttons to work, MUST have this call here.
     fluidRow(column(6, offset = 1, fileInput(NS(id, "file1"), label = h3("Select data file for input"), accept = ".xlsx", multiple = FALSE, buttonLabel = "Browse...", placeholder = "No file selected"))),
     fluidRow(column(4, offset = 1, actionButton(NS(id, "runQA"), label = "Run data file quality assurance")), 
@@ -20,11 +20,11 @@ input1UI <- function(id) {
     fluidRow(column(5, offset = 1,  textInput(NS(id, "HWPcomplete"), label = h3("Model Status"), value = "Model Not Run"))),
     fluidRow(column(width = 12, offset = 0, style = 'padding-left:0px; padding-right:1px; padding-top:15px; padding-bottom:15px')), # Adding a blank row.
     fluidRow(box(width = 9,
-      column(10, offset = 1, 
-             h3("Steps for uploading your own data into the app"),
-             p("Upload your HWP data here!  For complete instructions on how to provide your own data or how to upload other data sets, see " , 
-               a("this chapter", href = "https://jeremygroom.github.io/HWP-vR-Documentation/own.html#own"), " of the documentation."),
-             HTML("<ol>
+                 column(10, offset = 1, 
+                        h3("Steps for uploading your own data into the app"),
+                        p("Upload your HWP data here!  For complete instructions on how to provide your own data or how to upload other data sets, see " , 
+                          a("this chapter", href = "https://jeremygroom.github.io/HWP-vR-Documentation/own.html#own"), " of the documentation."),
+                        HTML("<ol>
                     <li> Obtain the template files.  This may be done from the Templates link on the left, by  
                   <a href=https://jeremygroom.github.io/HWP-vR-Documentation/dnld.html#dnld-git-git>cloning the GitHub repository </a>, or by
                   <a href=https://jeremygroom.github.io/HWP-vR-Documentation/dnld.html#dnld-git-zip>downloading a compressed file of the repository </a>.  
@@ -58,16 +58,16 @@ input1UI <- function(id) {
                   </ol>
 
                   ")
-             
+                        
+                 )
     )
-    )
-  )  )
+    )  )
   
 }
 
 
 
-input1Server <- function(id, hwp.dt, file.loc) {
+input1Server <- function(id, hwp.dt, file.loc, mc_trigger) {
   
   moduleServer(id, function(input, output, session) {
     
@@ -87,6 +87,15 @@ input1Server <- function(id, hwp.dt, file.loc) {
     })
     
     
+    # This is for the tables download functionality, where HWP-processed data can be 
+    #  downloaded for the base dataset or the uploaded dataset.  
+    data.hwp.tables <- reactive({
+      if (counterHWP$countervalue == 0) {
+        state.data[[which(state.choices == hwp.dt())]]
+      } else {
+        data.hwp()
+      }
+    })
     
     ## -- Opens and prepares HWP data -- #
     data.hwp <- reactive({
@@ -128,9 +137,9 @@ input1Server <- function(id, hwp.dt, file.loc) {
       h.c.d.c <- if (harv.col.dat.check) 2 else 1
       switch(h.c.d.c,
              1,
-      validate(
-       # need(s.n.check, "Incorrect worksheet names.  Check worksheet names and structure against those listed in the manual."),
-        "Harvest data are incomplete.  Add data to columns missing data or delete ownership columns.")
+             validate(
+               # need(s.n.check, "Incorrect worksheet names.  Check worksheet names and structure against those listed in the manual."),
+               "Harvest data are incomplete.  Add data to columns missing data or delete ownership columns.")
       )
       
       # Return data
@@ -149,7 +158,7 @@ input1Server <- function(id, hwp.dt, file.loc) {
       #browser()
       
       source(paste0(file.loc, "QA_Code_Shiny.r"), local = TRUE )
- #     browser()
+      #     browser()
       
       # The QA code will separate the worksheets into separate tables then run diagnostics on those tables
       counterQA$countervalue <- 1
@@ -157,18 +166,18 @@ input1Server <- function(id, hwp.dt, file.loc) {
       
     })
     
-
+    
     
     #### --------------------------------- ####
     ###   Download tables from QA check    ###
     #### --------------------------------- ####
     
-
+    
     
     ### Changing the output text default to reflect completion of the model
     observeEvent(qa.out(), {
       output$qa.download = renderUI(                                          # Download button appears after HWP model ran.
-        downloadButton(NS(id, "qa.download01"), label = "Download QA Output Table"))  # Had to separate output$hwp.cables from output$hwp.tables01 otherwise Shiny is confused.
+        downloadButton(NS(id, "qa.download01"), label = "Download QA Output Table"))  
     })
     
     
@@ -256,7 +265,7 @@ input1Server <- function(id, hwp.dt, file.loc) {
         OwnershipStartYear <- OWNERSHIP_STARTYEAR
       }
       ###############
-  #browser()
+      #browser()
       hwp.new <- hwp.output
       const.lst <- list(N.OWNERSHIP = N.OWNERSHIP, N.YEARS = N.YEARS, years = years, yearsUse = yearsUse, yearsTPO = yearsTPO, 
                         yearsSE = yearsSE, ownership.names = ownership.names, N.EUR = N.EUR, PIU.WOOD.LOSS = PIU.WOOD.LOSS,
@@ -293,15 +302,23 @@ input1Server <- function(id, hwp.dt, file.loc) {
     
     ### Changing the output text default to reflect completion of the model, adding download button
     
-    observe({  # Disables download button if new data are loaded.
-      toggleState("hwp.tables01", condition = (counterHWP$countervalue == 1))
-    })
+    # observe({  # Disables download button if new data are loaded.
+    #    toggleState("hwp.tables01", condition = (counterHWP$countervalue == 1))
+    #  })
     
     
-    observeEvent(hwp.out(), {
-      updateTextInput(session, "HWPcomplete", value = hwp.out()$msg)         # Updating text to signify HWP model worked.
+    observeEvent(data.hwp.tables(), {
+       # In the event that no data have been loaded, users can download the current
+      #    data set.  Otherwise, if new data are loaded and run, a successful model
+      #  run message appears, and they can download the tables for the new dataset. 
+      data.name <- if(counterHWP$countervalue == 0) {
+        hwp.dt()
+      } else {
+        data.hwp.tables()$HWP_MODEL_OPTIONS$DATASET.NAME
+      }
       output$hwp.tables = renderUI(                                          # Download button appears after HWP model ran.
-        downloadButton(NS(id, "hwp.tables01"), label = "Download HWP Tables"))  # Had to separate output$hwp.cables from output$hwp.tables01 otherwise Shiny is confused.
+        downloadButton(NS(id, "hwp.tables01"), label = paste0("Download ", data.name, " HWP Tables")))  
+      updateTextInput(session, "HWPcomplete", value = hwp.out()$msg)         # Updating text to signify HWP model worked.
       
     })
     
@@ -312,32 +329,50 @@ input1Server <- function(id, hwp.dt, file.loc) {
     }) 
     
     
+ 
     #### ---------------------------- ####
     ###   Download tables from HWP    ###
     #### ---------------------------- ####
-    hwp.tables <- eventReactive(hwp.out(), {
+    hwp.tables <- eventReactive(data.hwp.tables(), {
       
-      # Obtain the HWP data again, to glean constants
-      hwp.data <- data.hwp()
-      ## Importing constants
-      source(paste0(file.loc, "HWP_Model_Prep.R"), local = TRUE)
+      if(counterQA$countervalue == 1) { # If the new data were run...
+        
+        # Obtain the HWP data again, to glean constants
+        hwp.data <- data.hwp()
+        ## Importing constants
+        source(paste0(file.loc, "HWP_Model_Prep.R"), local = TRUE)
+        
+        ## Output names
+        model.outputs <- state.data[[3]]  
+        source(paste0(file.loc, "HWP_Output_Prep.R"), local = TRUE)
+        
+        yearsTPO <- years                             ## For TPO, use years as-is.
+        yearsSE <- years  + 1                         ##  For years for Stocks and Emitted values shift to one year later (unless not shifted, see next code section)
+        
+        if (SHIFTYEAR) {           # Shifted variables
+          yearsUse <- yearsSE
+          OwnershipStartYear <- OWNERSHIP_STARTYEAR + 1
+        } else {                   # Unshifted variables
+          yearsUse <- yearsTPO
+          OwnershipStartYear <- OWNERSHIP_STARTYEAR
+        }
+        
+      } else {  # Otherwise, use the selected dataset
+        model.outputs <- data.hwp.tables()
+        source(paste0(file.loc, "HWP_Output_Prep.R"), local = TRUE)
+        # These have to be specified because this info is assumed loaded
+        #  after processing a novel dataset.  
+        years <- model.outputs$years
+        harv.hwp <- model.outputs$harv.hwp
+        N.OWNERSHIP <- model.outputs$N.OWNERSHIP
+        eu_half.lives.hwp <- model.outputs$eu_half.lives.hwp
+        N.YEARS <- model.outputs$N.YEARS
+        ownership.names <- model.outputs$ownership.names
+        yearsUse <- model.outputs$yearsUse
+        
+        }
       
-      ## Output names
-      model.outputs <- state.data[[3]]  
-      source(paste0(file.loc, "HWP_Output_Prep.R"), local = TRUE)
       
-      yearsTPO <- years                             ## For TPO, use years as-is.
-      yearsSE <- years  + 1                         ##  For years for Stocks and Emitted values shift to one year later (unless not shifted, see next code section)
-      
-      if (SHIFTYEAR) {           # Shifted variables
-        yearsUse <- yearsSE
-        OwnershipStartYear <- OWNERSHIP_STARTYEAR + 1
-      } else {                   # Unshifted variables
-        yearsUse <- yearsTPO
-        OwnershipStartYear <- OWNERSHIP_STARTYEAR
-      }
-      
-      #browser()
       source(paste0(file.loc, "HWP_Tables_Code.R"), local = TRUE)
       
       
@@ -379,8 +414,6 @@ input1Server <- function(id, hwp.dt, file.loc) {
     ###         Monte Carlo simulation run        ###
     #################################################
     
-    
-    
     mc.out <- eventReactive(input$RunMC, {
       #browser()
       
@@ -395,7 +428,8 @@ input1Server <- function(id, hwp.dt, file.loc) {
       
       ## Loading the new data for the MC run:
       new.state.data <- state.data[[3]]
-
+      mc_trigger(mc_trigger() + 1)   ## Updates the mc_trigger level under app.R.  For reactive timing of Plot_MCest_Module.R.
+      
       y <- Sys.time()  # At the end of this section the app reports (behind the scenes) how long the process takes.  
       show_modal_spinner(spin = "trinity-rings", text = paste0("The Monte Carlo process is underway.  This process is expected to take ", 
                                                                round(0.0044 * new.state.data$N.ITER * new.state.data$N.YEARS / 60, 1), " minutes")) # show the modal window
@@ -404,7 +438,7 @@ input1Server <- function(id, hwp.dt, file.loc) {
       ## For the MC, need to define HWP outputs from the new data:
       model.outputs <- new.state.data  
       source(paste0(file.loc, "HWP_Output_Prep.R"), local = TRUE)
-
+      
       ## RUN MONTE CARLO SCRIPT ##
       
       source(paste0(file.loc, "MC_Code.R"), local = TRUE)
@@ -433,7 +467,7 @@ input1Server <- function(id, hwp.dt, file.loc) {
       #####  Finding MC summary stats for the four categories of general output ###
       
       mean_MC <- ciLCI_MC <- ciUCI_MC <- data.frame(eec = rep(0, N.YEARS), ewoec = rep(0, N.YEARS), 
-                                                  swdsC = rep(0, N.YEARS), pu = rep(0, N.YEARS))
+                                                    swdsC = rep(0, N.YEARS), pu = rep(0, N.YEARS))
       for (i in 1:4) {
         mean_MC[,i] <- apply(MCout[, , i], 1, mean)
         ciLCI_MC[, i] <- apply(MCout[, , i], 1, quantile, probs = lci.prob)  # Obtaining the CI empirically
@@ -464,7 +498,7 @@ input1Server <- function(id, hwp.dt, file.loc) {
       
       mc_PoolsTotalPlot <- tibble(Year = START.YEAR:END.YEAR, Mean = mean_MMTC/1e6, lci = ciLCI_MMTC/1e6, uci = ciUCI_MMTC/1e6)
       #write_csv(mc_PoolsTotalPlot, "MC_Output/MC_Tables/MC_PIU_Plus_SWDS.csv")
-
+      
       ## Now updating the MC values for the new data set ##
       
       state.data[[3]]$mc_iter_results <<- mc_iter_results 
@@ -481,9 +515,9 @@ input1Server <- function(id, hwp.dt, file.loc) {
     ## -- Downloading MC tables -- ##
     observeEvent(mc.out(), {
       updateTextInput(session, "HWPcomplete", value = "Monte Carlo is complete!")
-     # browser()                     # Uncomment here when replacing CA or OR default files. 
+      # browser()                     # Uncomment here when replacing CA or OR default files. 
       output$mc.tables = renderUI(                                          # Download button appears after HWP model ran.
-        downloadButton(NS(id, "mc.tables01"), label = "Download Monte Carlo Tables"))  # Had to separate output$hwp.cables from output$hwp.tables01 otherwise Shiny is confused.
+        downloadButton(NS(id, "mc.tables01"), label = "Download Monte Carlo Tables"))  
     }) 
     
     observe({  # Disables download button if new data are loaded.
@@ -507,9 +541,6 @@ input1Server <- function(id, hwp.dt, file.loc) {
     
     
     return(return_new_name)
-    
-    
-    
   })
   
 }

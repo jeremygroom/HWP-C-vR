@@ -34,7 +34,7 @@ library(vroom)
 # Load data and general functions
 file.loc <- "HWP_Shiny_App/R_code_data/"
 source(paste0(file.loc, "global.r"))
-HWP.VERSION <- "HWP Version 1.1.0"
+HWP.VERSION <- "HWP Version 1.1.1"
 
 #
 
@@ -180,6 +180,8 @@ HWPapp <- function() {
   
   # Shiny server function:
   server <- function(input, output, session) {
+    mc_trigger <- reactiveVal(0)  # Allows Plot_MCest_Module to know that the data have been updated.
+    
     output$homeP <- plot_HomePage_Server("homeP", file.loc)
     output$AnnTimHarv <- plot_AnnTimHarv_Server("AnnTimHarv", reactive(input$Dataset))
     output$CStorOwn <- plot_CStorOwn_Server("CStorOwn", reactive(input$Dataset), file.loc)
@@ -187,9 +189,9 @@ HWPapp <- function() {
     output$AnNetChCStor <- plot_AnNetChCStor_Server("AnNetChCStor", reactive(input$Dataset))
     output$FateHarvC <- plot_FateHarvC_Server("FateHarvC", reactive(input$Dataset), file.loc)
     output$HarvFuncLS <- plot_HarvFuncLS_Server("HarvFuncLS", reactive(input$Dataset))
-    output$MCest <- plot_MCest_Server("MCest", reactive(input$Dataset), file.loc)
+    output$MCest <- plot_MCest_Server("MCest", reactive(input$Dataset), file.loc, mc_trigger)
     output$ContactUs <- plot_ContactUs_Server("ContactUs", file.loc)
-    new.hwp.model <- input1Server("Input_Page", reactive(input$Dataset), file.loc) # Must pass global file.loc variable to module for it to be seen in shinyapps.io server
+    new.hwp.model <- input1Server("Input_Page", reactive(input$Dataset), file.loc, mc_trigger) # Must pass global file.loc variable to module for it to be seen in shinyapps.io server
     output$Input_Page <- new.hwp.model   
     
     
@@ -202,6 +204,8 @@ HWPapp <- function() {
     })
     
     
+   
+   
   }
   # Run the application 
   shinyApp(ui = ui, server = server)

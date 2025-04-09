@@ -46,11 +46,16 @@ plot_MCest_UI <- function(id) {
 }
 
 
-plot_MCest_Server <- function(id, hwp.dt, file.loc) {
+plot_MCest_Server <- function(id, hwp.dt, file.loc, mc_trigger) {
   
   moduleServer(id, function(input, output, session) {
 
-    state.data.sel <- reactive(state.data[[which(state.choices == hwp.dt())]]) 
+    state.data.sel <- reactive({
+      mc_trigger()  # This is necessary to incorporate the changes to the dataset from the Monte Carlo run of new data.
+      # If no MC output are available, the as-is data are passed on. 
+      mc.dat <- state.data[[which(state.choices == hwp.dt())]]
+      mc.dat
+      }) 
         
     counter <- reactiveValues(countervalue = 0)  # Setting a counter to register if plots are switched. If they are, the titles revert to original titles
     
@@ -97,7 +102,7 @@ plot_MCest_Server <- function(id, hwp.dt, file.loc) {
     
     
     plotForOutput <- reactive({
-      
+      #browser()
       hwp.data <- state.data.sel()     # Note: This is passed to module server from main UI, not module UI
       
       
