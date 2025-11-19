@@ -287,7 +287,7 @@ plot_FateHarvC_Server <- function(id, hwp.dt, file.loc) {
         scale_y_continuous(breaks = seq(0, C_yrs.y$max.y, by = C_yrs.y$breaks.y), limits = c(0, C_yrs.y$max.y), expand = c(0, 0)) +
         labs(fill = "", x = "Years of Decay", y = y.lab.txt,
              title = if (input$action2 == 0) paste("Carbon in pools and emissions from harvest in", hwp.yr) else input$change_title_fhc.2) + 
-        geom_vline(xintercept = blueline.yr, color = "blue", alpha = 0.4, size = 2) +
+        geom_vline(xintercept = blueline.yr, color = "blue", alpha = 0.4, linewidth = 2) +
         theme(text = element_text(size = 18))
       
       gg.y <- gg.x +  guides(fill = guide_legend(title = element_blank(),

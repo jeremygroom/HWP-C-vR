@@ -129,7 +129,7 @@ plot_MCest_Server <- function(id, hwp.dt, file.loc, mc_trigger) {
         plot.mc <- ggplot(hwp.data$mc_plot, aes(Year, Means/1e6)) +
           geom_ribbon(aes(ymin = lci/1e6, ymax = uci/1e6), ) +
           geom_line(color = "yellow") + 
-          facet_wrap(~ Type.M, labeller = hwp.data$C.names) + 
+          facet_wrap(vars(Type.M), labeller = hwp.data$C.names) + 
           labs(x = NULL, y = y.lab.cc, 
                title = if (counter$countervalue == 0) wrapper(title.use, 75) else wrapper(input$change_titleMC, 75)) + # See functions for 'wrapper'
           #theme_bw() +

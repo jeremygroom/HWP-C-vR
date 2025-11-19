@@ -34,7 +34,7 @@ library(vroom)
 # Load data and general functions
 file.loc <- "HWP_Shiny_App/R_code_data/"
 source(paste0(file.loc, "global.r"))
-HWP.VERSION <- "HWP Version 1.1.1"
+HWP.VERSION <- "HWP Version 1.1.2"
 
 #
 

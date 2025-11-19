@@ -317,7 +317,7 @@ plot_CStorEm_Server <- function(id, hwp.dt) {
                             breaks = plots.data()$p1G.breaks,
                             values = plots.data()$p1G.colors,
                             drop = FALSE) +  
-          guides(fill = guide_legend(title = element_blank(),
+          guides(fill = guide_legend(title = NULL,
                                      #nrow = 3, byrow = T, 
                                      override.aes = list(size = 1), reverse = F)) +
           labs(y = y.lab.cc, x = NULL, 

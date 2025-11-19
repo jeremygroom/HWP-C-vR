@@ -485,7 +485,7 @@ input1Server <- function(id, hwp.dt, file.loc, mc_trigger) {
           pct_lci = lci/Means,
           pct_uci = uci/Means)
       
-      C.names <- as_labeller(c(`eec` = "Emitted with Energy Capture" ,  `ewoec` = "Emitted Without Energy Capture",`swdsC` = "Solid Waste Disposal Sites", `pu` = "Products in Use"))
+      C.names <- ggplot2::as_labeller(c(`eec` = "Emitted with Energy Capture" ,  `ewoec` = "Emitted Without Energy Capture",`swdsC` = "Solid Waste Disposal Sites", `pu` = "Products in Use"))
       
       #  write_csv(mc_plot, "MC_Output/MC_Tables/MC_ComponentsSummary.csv")
       

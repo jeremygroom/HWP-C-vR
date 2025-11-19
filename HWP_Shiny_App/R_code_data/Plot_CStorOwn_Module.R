@@ -192,8 +192,8 @@ plot_CStorOwn_Server <- function(id, hwp.dt, file.loc) {
         scale_y_continuous(breaks = seq(0, max.y$max.y ,by = max.y$breaks.y), limits = c(0, max.y$max.y), expand = c(0, 0)) +
         scale_fill_manual(name = "", labels = f4.labels,
                           values = hex_codes.use) + 
-        guides(fill = guide_legend(labels = f4.labels, 
-                                   title = element_blank(), nrow = 3, byrow = T, override.aes = list(size = 1))) +
+        guides(fill = guide_legend(#labels = f4.labels, 
+                                   title = NULL, nrow = 3, byrow = T, override.aes = list(size = 1))) +
         labs(y = y.lab.cc, x = "Harvest Year", 
              title = if (input$action == 0) wrapper(title.complete(), 70) else wrapper(input$change_title_cso, 70)) + # See Functions for 'wrapper' 
         theme_bw()  + 

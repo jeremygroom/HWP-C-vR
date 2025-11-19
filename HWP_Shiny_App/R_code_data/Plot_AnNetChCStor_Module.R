@@ -170,7 +170,7 @@ plot_AnNetChCStor_Server <- function(id, hwp.dt) {
           geom_hline(yintercept = 0) +
           scale_x_continuous(breaks = seq(hwp.data$MIN.PLOT.YR, hwp.data$MAX.PLOT.YR, by = yr.sep), minor_breaks = NULL) +
           scale_y_continuous(breaks = seq(t.y$min.y, t.y$max.y ,by = t.y$breaks.y), limits = c(t.y$min.y, t.y$max.y), expand = c(0, 0)) +
-          scale_fill_manual(values = t3.leg$hex.sel, breaks = t3.leg$pool.sel, labels = t3.leg$labs.sel, name = element_blank()) +  
+          scale_fill_manual(values = t3.leg$hex.sel, breaks = t3.leg$pool.sel, labels = t3.leg$labs.sel, name = NULL) +  
           labs(y = y.lab.cc, x = NULL, 
                title = if (input$action1 == 0) "IPCC production approach - stock change" else input$change_title_anccs.1) + 
           expand_limits(y = 0) +
@@ -210,7 +210,7 @@ plot_AnNetChCStor_Server <- function(id, hwp.dt) {
           geom_hline(yintercept = 0) +
           scale_x_continuous(breaks = seq(hwp.data$MIN.PLOT.YR, hwp.data$MAX.PLOT.YR, by = yr.sep), minor_breaks = NULL) +
           scale_y_continuous(breaks = seq(t.y$min.y, t.y$max.y ,by = t.y$breaks.y), limits = c(t.y$min.y, t.y$max.y), expand = c(0, 0)) +
-          scale_fill_manual(values = t3.leg$hex.sel, breaks = t3.leg$pool.sel, labels = t3.leg$labs.sel, name = element_blank()) +  
+          scale_fill_manual(values = t3.leg$hex.sel, breaks = t3.leg$pool.sel, labels = t3.leg$labs.sel, name = NULL) +  
           labs(y = y.lab.cc, x = NULL, 
                title = if (input$action1 == 0) "IPCC simple decay approach - net change" else input$change_title_anccs.1) + 
           expand_limits(y = 0) +

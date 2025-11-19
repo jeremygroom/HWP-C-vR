@@ -5,8 +5,8 @@ account: groomanalyticsllc
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 6581525
-bundleId: 10088424
+bundleId: 11204015
 url: https://groomanalyticsllc.shinyapps.io/HWP-C-vR/
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: How to update default data in app.docx|HWP Data|HWP_Stand_Alone_Files
+ignoredFiles: Append_Harvest_Data.R|How to update default data in app.docx|HWP_Stand_Alone_Code.R|MC_ComponentsSummary.csv|MC_PIU_Plus_SWDS.csv|T1.0.Annual_Harvest.csv|T2.0.Harvest_Halflives.csv|T3.0.Cumulative.Ownership.Storage.Emissions.csv|T3.5.Cumulative.Ownership.Storage.Emissions_CO2e.csv|T4.0.CumulativeStorageEmissions_summary.csv|T4.5.CumulativeStorageEmissions_detail.csv|T4.8.CumulativeStorageEmissions_halflives.csv|T5.0.AnnualStorageEmissionsChange.csv|HWP_Stand_Alone_Files

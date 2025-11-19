@@ -125,7 +125,7 @@ plot_HarvFuncLS_Server <- function(id, hwp.dt) {
         scale_x_continuous(breaks = seq(hwp.data$MIN.PLOT.YR, hwp.data$MAX.PLOT.YR, by = yr.sep), limits = c(hwp.data$MIN.PLOT.YR, max(as.numeric(sml3$years)))) +
         scale_y_continuous(breaks = breaks.sml3, limits = limits.sml3, expand = c(0, 0)) +
         labs(x = "Harvest Year", y = yaxis.lab, title = wrapper(title.sml3, 70)) +  #, fill = "Product in\nuse halflife") +
-        guides(fill = guide_legend(title = element_blank(), nrow = 1, byrow = T, override.aes = list(size = 1))) +
+        guides(fill = guide_legend(title = NULL, nrow = 1, byrow = T, override.aes = list(size = 1))) +
         theme(text = element_text(size = 20), legend.position = "bottom", #legend.text = element_text(size=15),
               panel.background = element_rect(fill = 'lightgrey'))
       
