@@ -283,8 +283,13 @@ ratio_cat_hwp <- tC.read("RatioCategories"); ratio_cat.hwp <- ratio_cat_hwp$tble
 ratio_cat_true1 <- is.data.frame(ratio_cat.hwp) 
 
 # Checking that column names correct
+if(EXPAND.WASTE == FALSE){
 ratio_cat_namecheck <- name.check.fcn(ratio_cat_true1, colnames(ratio_cat.hwp), c("TimberProductID", "PrimaryProductID", "EndUseID", "TimberProduct", "PrimaryProduct", "EndUseProduct"), "six", "columns")  
 error.report$ratio_cat_hwp[2] <- ratio_cat_namecheck$msg; terminate$ratio_cat_hwp[2] <- ratio_cat_namecheck$term
+} else {
+  ratio_cat_namecheck <- name.check.fcn(ratio_cat_true1, colnames(ratio_cat.hwp), c("TimberProductID", "PrimaryProductID", "EndUseID", "DiscardID", "TimberProduct", "PrimaryProduct", "EndUseProduct", "DiscardProduct"), "eight", "columns")  
+  error.report$ratio_cat_hwp[2] <- ratio_cat_namecheck$msg; terminate$ratio_cat_hwp[2] <- ratio_cat_namecheck$term
+}
 
 # Ensuring that some EUR rows are labeled as "fuel"
 if (ratio_cat_true1) {
@@ -294,7 +299,7 @@ if (ratio_cat_true1) {
       terminate$ratio_cat_hwp[3] <- 1}}
 
 # Ensuring that some EUR rows are labeled as "pulp"  
-if (ratio_cat_true1) {
+if (ratio_cat_true1 & EXPAND.WASTE == FALSE) {
   if (length(grep("pulp", ratio_cat.hwp$EndUseProduct)) > 0) {
     error.report$ratio_cat_hwp[4] <- "The word 'pulp' appears in column EndUseProduct"} else {
       error.report$ratio_cat_hwp[4] <- "The word 'pulp' DOES NOT APPEAR in column EndUseProduct"
@@ -366,11 +371,13 @@ error.report$discard_fates_hwp[4] <- discard.fates.yr.name$msg ; terminate$disca
 discard.fates.vals.numeric.check <- vals.numeric.check.fcn(discard_fates_true1, discard.fates.hwp, 3)
 error.report$discard_fates_hwp[5] <- discard.fates.vals.numeric.check$msg ; terminate$discard_fates_hwp[5] <- discard.fates.vals.numeric.check$term
 
-# Do all column (year) values sum to 2?
+# Do all column (year) values sum to 2 (or 8 or whatever for an expanded discard type)?
 if (all(discard_fates_true1, discard.fates.yr.n$term == 0, discard.fates.vals.numeric.check$term == 0)) {
-  if (all(apply(discard.fates.hwp[, 3:(N.YEARS + 2)], 2, sum) == 2)) {
-    error.report$discard_fates_hwp[5] <- "Year columns correctly sum to 2"} else {
-      error.report$discard_fates_hwp[5] <- "Year columns DO NOT sum to 2. Check values."
+  uniq.dest <- length(unique(discard.fates.hwp$DiscardDestination))
+  targ.disc.val <- dim(discard.fates.hwp)[1]/(uniq.dest)
+  if (all(apply(discard.fates.hwp[, 3:(N.YEARS + 2)], 2, sum) == targ.disc.val)) {
+    error.report$discard_fates_hwp[5] <- paste0("Year columns correctly sum to ", targ.disc.val)} else {
+      error.report$discard_fates_hwp[5] <- paste0("Year columns DO NOT sum to ", targ.disc.val, ". Check values.")
       terminate$discard_fates_hwp[5] <- 1} }
 
 # QA checks for discard.hl.hwp
@@ -383,10 +390,12 @@ discard_hl_namecheck <- name.check.fcn(discard_hl_true1, colnames(discard.hl.hwp
 error.report$discard_hl_hwp[2] <- discard_hl_namecheck$msg
 terminate$discard_hl_hwp[2] <- discard_hl_namecheck$term
 
+if(EXPAND.WASTE == FALSE) {
 # Need first two rows to = 'paper', then 'wood'
 discard_hl.rows_namecheck <- name.check.fcn(discard_hl_true1, discard.hl.hwp[1:2, 1], c("paper", "wood"), "two", "rows")  
 error.report$discard_hl_hwp[3] <- discard_hl.rows_namecheck$msg
 terminate$discard_hl_hwp[3] <- discard_hl.rows_namecheck$term
+}
 
 # Checking that all values are numeric
 discard_hl.vals.numeric.check <- vals.numeric.check.fcn(discard_hl_true1, discard.hl.hwp, 2)

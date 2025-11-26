@@ -144,8 +144,8 @@ DiscardProd.s.fcn <- function(fate.type, disc.fates, dyrs) {
   disc.fates %>% filter(DiscardDestination == fate.type) %>%
     pivot_longer(cols = 3:(dyrs + 2), names_to = "Year", values_to = fate.type) %>%
     select(-DiscardDestination) %>%
-    mutate(Year = as.numeric(Year),
-           paper = ifelse(DiscardType == "paper", 1, 0))
+    mutate(Year = as.numeric(Year))#,
+           #paper = ifelse(DiscardType == "paper", 1, 0))  # THIS PORTION COMMENTED OUT FOR T. LUCEY CODE
 }
 
 ############# Toned-down HWP model run on existing data to produce Sankey output ########################
@@ -397,7 +397,9 @@ EmptyFirst.fcn <- function(target.array, n.eur, n.ownership){
 ### This function conducts several summaries and calculations.  It creates a "decay array" from the target array that decays the target array
 ## over time and accounts for annual inputs from the target array.  It creates a "totals array" that is the cumulative sum over years of  group
 ##  every EU/owner.  The loop includes a 'next' call and starts the cumulative sums at the first non-zero entry to reduce computer time.  
-Decay.fcn <- function(empty.array, first.array, target.array, decay.matrix, N.EUR, N.OWNERSHIP, N.YEARS) {
+Decay.fcn <- function(empty.array, first.array, target.array, decay.matrix, N.EUR, N.OWNERSHIP, N.YEARS, EXPAND.WASTE = EXPAND.WASTE) {
+  #col.use <- if(EXPAND.WASTE == FALSE) 2 else 3
+  col.use <- dim(decay.matrix)[2]
   decay.array <- totals.array <- discard.array1.5 <- array(0, c(N.EUR, N.OWNERSHIP, N.YEARS))    # Initiating with zeros
   decay.array[, , 1] <- target.array[, , 1]   # The first year = initial values
   for (k in 1:N.EUR) {  
@@ -406,7 +408,7 @@ Decay.fcn <- function(empty.array, first.array, target.array, decay.matrix, N.EU
       totals.array[k, j, ] <- cumsum(target.array[k, j,])
       
       for (i in first.array[k,j]:N.YEARS) {
-        decay.array[k, j, i] <- as.numeric(target.array[k, j, i] + decay.array[k, j, i - 1] * exp(-1 * log(2)/decay.matrix[[k,2]]))
+        decay.array[k, j, i] <- as.numeric(target.array[k, j, i] + decay.array[k, j, i - 1] * exp(-1 * log(2)/decay.matrix[[k, col.use]]))
       }
     }
   }
@@ -418,6 +420,37 @@ Decay.fcn <- function(empty.array, first.array, target.array, decay.matrix, N.EU
   # Output
   totals.decay.output <- list(decay = decay.array, da = discard.array)
 }  
+
+
+### T. Lucey version of the Decay() function ----------------------------
+## Note: I think if a single line were entered that was 2 if EXPAND.WASTE were FALSE and 3 if TRUE that this function would not be needed.
+#Decay1.fcn <- function(empty.array, first.array, target.array, decay.matrix, N.EUR, N.OWNERSHIP, N.YEARS) {
+#  decay.array <- totals.array <- discard.array1.5 <- array(0, c(N.EUR, N.OWNERSHIP, N.YEARS))    # Initiating with zeros
+#  decay.array[, , 1] <- target.array[, , 1]   # The first year = initial values
+#  for(k in 1:N.EUR) {
+#    for(j in 1:N.OWNERSHIP) {
+#      if(empty.array[k,j ]== 0) next
+#      totals.array[k, j, ] <- cumsum(target.array[k, j,])
+#      
+#      for(i in first.array[k,j]:N.YEARS) {
+#        decay.array[k, j, i] <- as.numeric(target.array[k, j, i] + decay.array[k, j, i-1] * exp(-1 * log(2)/decay.matrix[[k,3]])) #changed '2' to 3 after decay.matrix[[k,]].
+#      }
+#    }
+#  }
+#  #Products in Use Discards (End Uses Totals -minus- Products in Use array )
+#  discard.array1 <- totals.array - decay.array  # The cumulative sums of carbon put into use ever minus the actual amount that remains after decay.
+#  discard.array1.5[, , 2:N.YEARS] <- discard.array1[, , 1:(N.YEARS-1)]  # Filling in with shifted discard.array1 values accounting for previous year carbon emitted
+#  discard.array <- discard.array1 - discard.array1.5     # Annual emissions = for each year, the cumulative sum of in-use carbon
+#  #   minus the remaining carbon, minus the emitted values from the previous year.
+#  # Output
+#  totals.decay.output <- list(decay = decay.array, da = discard.array)
+#}
+###  ------------------------------------------------------------------------
+
+
+
+
+
 
 
 
@@ -437,8 +470,9 @@ DiscardProd.fcn <- function(fate.type, disc.fates, N.YEARS) {
   disc.fates %>% filter(DiscardDestination == fate.type) %>%
     pivot_longer(cols = 3:(N.YEARS + 2), names_to = "Year", values_to = fate.type) %>%
     select(-DiscardDestination) %>%
-    mutate(Year = as.numeric(Year),
-           paper = ifelse(DiscardType == "paper", 1, 0))
+    mutate(Year = as.numeric(Year)) %>%
+    {if(EXPAND.WASTE == FALSE) mutate(., paper = ifelse(DiscardType == "paper", 1, 0)) else .}
+           
 }
 
 
