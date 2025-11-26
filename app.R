@@ -28,7 +28,7 @@ library(jpeg)
 library(shinybusy)   # Busy signal for Monte Carlo simulation run (ModelRunPage.R)
 library(vroom)
 
-#renv::snapshot()     # If any of the libraries are updated and the project works, run this code to preserve the new library changes.
+#renv::snapshot()     # If any of the packages are updated and the project works, run this code to preserve the new package changes.
 
 
 # Load data and general functions
