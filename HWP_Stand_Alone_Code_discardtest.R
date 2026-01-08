@@ -42,11 +42,11 @@ SANKEY.YEARS.OF.DECAY <- 30    # Set to any number between 3 and 100.
 ### Folder locations
 SHINY.CODE <- "HWP_Shiny_App/R_code_data/"              # Code chunks that both Shiny and the stand-alone model depend upon. They are stored in the Shiny app folder.
 IMPORT.DATA.FOLDER <- "HWP Data/ExistingData/"
-IMPORT.DATA.FILE <- "CA_Inputs_HWP_2discard.xlsx"  #"CA_Inputs_HWP_8discard.xlsx"    # Change this to select other files from the "HWP Data" folder.
+IMPORT.DATA.FILE <- "CA_Inputs_HWP_8discard.xlsx" #"CA_Inputs_HWP_2discard.xlsx"      # Change this to select other files from the "HWP Data" folder.
 QAQC.FOLDER <- "HWP_Stand_Alone_Files/QAQC_Reports/"
 SA.CODE <- "HWP_Stand_Alone_Files/Standalone_R_files/"   # Stand-alone HWP model code
 
-EXPAND.WASTE <- FALSE   # Expand the wood/paper categories to 8 based on T. Lucey's work
+EXPAND.WASTE <- TRUE   # Expand the wood/paper categories to 8 based on T. Lucey's work
 
 ############################################################################
 ## Loading the data, either using the QA code or bypassing it
@@ -96,12 +96,6 @@ if (hwp.data$HWP_MODEL_OPTIONS$QA_TEST[1] == TRUE) {      # Should QA test be ru
 #######################################################
 ### User Defined Options and CONSTANTS
 
-  # PIU.WOOD.LOSS is renamed to PIU.LOSS in the data sets that make waste distinctions beyond Wood and Paper.
-#    This bit of code before the source() function helps the function work; the altered HWP_Model_Function file relies 
-#   on PIU.LOSS.  
-if(EXPAND.WASTE == TRUE) {
-  hwp.model.options$PIU.WOOD.LOSS <- PIU.LOSS <- hwp.model.options$PIU.LOSS
-}
 
 source(paste0(SHINY.CODE, "HWP_Model_Prep.R"), local = TRUE)
 
@@ -140,7 +134,9 @@ hwp.output <- HwpModel_discard.fcn(harv = harv.hwp,
                            N.EUR = N.EUR, 
                            N.OWNERSHIP = N.OWNERSHIP, 
                            N.YEARS = N.YEARS,
-                           PIU.LOSS = PIU.LOSS)
+                           PIU.WOOD.LOSS = PIU.WOOD.LOSS,
+                           PIU.PAPER.LOSS = PIU.PAPER.LOSS
+                           )
 
 # Prepare outputs for use in tables and arrays
 model.outputs <- hwp.output  

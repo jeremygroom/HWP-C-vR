@@ -23,7 +23,9 @@
 ########################################################
 
 HwpModel_discard.fcn <- function(harv, bfcf, tpr, ppr, ratio_cat, ccf_conversion, eur, eu_half.lives, discard.fates, discard.hl, 
-                         ownership.names, N.EUR, N.OWNERSHIP, N.YEARS, PIU.LOSS) { # Note that PIU.WOOD.LOSS, PIU.PAPER.LOSS replaced
+                         ownership.names, N.EUR, N.OWNERSHIP, N.YEARS, PIU.WOOD.LOSS, PIU.PAPER.LOSS) {
+  
+  
   
   # Constructing data to place in the End Use Products array
   harv[is.na(harv) == T] <- 0        # Replace NAs with zeros
@@ -92,12 +94,18 @@ HwpModel_discard.fcn <- function(harv, bfcf, tpr, ppr, ratio_cat, ccf_conversion
   eur.pulp <- grep("pulp", ratio_cat$PrimaryProduct)      #Changed to Primary Product from DiscardProduct so that 100% of pulp used, no discard 
   eur.fuel.pulp <- sort(c(eur.fuel, eur.pulp))      #End use ratio rows for fuel wood and wood pulp (both not discarded)
   
-#  PIU.LOSS <- matrix(rep(PIU.WOOD.LOSS, N.EUR), ncol = 1)  # Removed for the discard exapansion version.
-#  PIU.LOSS[eur.pulp,] <- PIU.PAPER.LOSS
+if(EXPAND.WASTE == FALSE) { 
+  PIU.LOSS <- matrix(rep(PIU.WOOD.LOSS, N.EUR), ncol = 1)  # Removed for the discard exapansion version.
+  PIU.LOSS[eur.pulp,] <- PIU.PAPER.LOSS
+  dp_array <- sweep(eu_array, MARGIN = 1, PIU.LOSS, `*`)    # Multiply the eu_array by the loss vector to create the discarded products array (dp_array).
   
+} else {
+  # PIU.WOOD.LOSS is renamed to PIU.LOSS in the data sets that make waste distinctions beyond Wood and Paper.
+  PIU.LOSS <- hwp.model.options$PIU.WOOD.LOSS
   dp_array <- PIU.LOSS * eu_array    # Multiply the eu_array by the loss constant to create the discarded products array (dp_array).
-                                      #  (This bit of code is different from the original but does the same thing)
+}
   
+
   dp_array[eur.fuel.pulp, , ] <- 0            # Removing fuel wood AND PULP from the dp_array because it is assumed burned in the given year (no discard). 
 
     
