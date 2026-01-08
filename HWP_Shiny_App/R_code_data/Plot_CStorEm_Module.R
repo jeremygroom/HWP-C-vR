@@ -302,6 +302,9 @@ plot_CStorEm_Server <- function(id, hwp.dt) {
       
       # Setting up intervals for X labels
       yr.sep <- round(length(seq(hwp.dataX$MIN.PLOT.YR, hwp.dataX$MAX.PLOT.YR, by = 10))/10, ) * 10
+      min.yr = hwp.dataX$MIN.PLOT.YR
+      max.yr = hwp.dataX$MAX.PLOT.YR
+      
       
       # Plotting
       if (input$filltype == "1") {
@@ -310,7 +313,7 @@ plot_CStorEm_Server <- function(id, hwp.dt) {
         gg.x <- ggplot() +
           geom_area(data = plots.data()$p1G.1, aes(years, C, fill = cFates)) + 
           geom_hline(yintercept = 0) +
-          scale_x_continuous(breaks = seq(hwp.dataX$MIN.PLOT.YR, max(plots.data()$p1G.1$years), by = yr.sep), limits = c(hwp.dataX$MIN.PLOT.YR, max(plots.data()$p1G.1$years)), minor_breaks = NULL) +
+          scale_x_continuous(breaks = seq(min.yr, max(plots.data()$p1G.1$years), by = yr.sep), limits = c(min.yr, max(plots.data()$p1G.1$years)), minor_breaks = NULL) +
           scale_y_continuous(breaks = seq(plots.data()$max.y.1$min.y, plots.data()$max.y.1$max.y, by = plots.data()$max.y.1$breaks.y), 
                              limits = c(y.lim.min, plots.data()$max.y.1$max.y), minor_breaks = NULL, expand = c(0, 0)) +
           scale_fill_manual(labels = plots.data()$p1G.leg.names,
@@ -326,13 +329,21 @@ plot_CStorEm_Server <- function(id, hwp.dt) {
           theme(text = element_text(size = 20), 
                 legend.position = "right", legend.text = element_text(size = 15), legend.spacing.y = unit(0, 'cm'))
         
+        # For creating the figure outside of the app... 
+        #write_rds(list(data1 = plots.data()$p1G.1, 
+        #               max.y.1 = plots.data()$max.y.1, 
+        #               p1G.leg.names = plots.data()$p1G.leg.names,
+        #               p1G.breaks = plots.data()$p1G.breaks, 
+        #               p1G.colors = plots.data()$p1G.colors,
+        #               min.yr = min.yr, max.yr = max.yr, yr.sep = yr.sep, y.lab.cc = y.lab.cc), "CStorEm1.rds")
+        
       } else if (input$filltype == "2") {
-        #browser()
+       # browser()
           gg.x <- ggplot() +
           geom_area(data = plots.data()$p.e.1, aes(years, C, fill = cFates)) + #, levels = c("dmp", "lf", "lf.fx",  "recov", "pu")) + 
           #geom_area(data = p.e.1_neg, aes(years, C, fill = cFates))+#, levels = c("fuel", "dec", "bwoec", "dmp.decay", "lf.decay", "recov.decay", "comp")) + 
           geom_hline(yintercept = 0) +
-          scale_x_continuous(breaks = seq(hwp.dataX$MIN.PLOT.YR, hwp.dataX$MAX.PLOT.YR, by = yr.sep), limits = c(hwp.dataX$MIN.PLOT.YR, max(plots.data()$p.e.1$years)), minor_breaks = NULL) +
+          scale_x_continuous(breaks = seq(min.yr, max.yr, by = yr.sep), limits = c(min.yr, max(plots.data()$p.e.1$years)), minor_breaks = NULL) +
           scale_y_continuous(breaks = seq(plots.data()$max.y.2$min.y, plots.data()$max.y.2$max.y, by = plots.data()$max.y.2$breaks.y), 
                              limits = c(plots.data()$max.y.2$min.y, plots.data()$max.y.2$max.y), minor_breaks = NULL, expand = c(0, 0)) +
           scale_fill_manual(labels = plots.data()$legend.labels,
@@ -346,13 +357,21 @@ plot_CStorEm_Server <- function(id, hwp.dt) {
           theme_bw()  + 
           theme(text = element_text(size = 20), 
                 legend.position = "right", legend.text = element_text(size = 15), legend.spacing.y = unit(0, 'cm'))
-        
+          
+          # For creating the figure outside of the app... 
+          #write_rds(list(data1 = plots.data()$p.e.1, 
+          #               max.y.2 = plots.data()$max.y.2, 
+          #               legend.labels = plots.data()$legend.labels,
+          #               legend.breaks = plots.data()$legend.breaks, 
+          #               hex_codes.p.e.use2 = plots.data()$hex_codes.p.e.use2,
+          #               min.yr = min.yr, max.yr = max.yr, yr.sep = yr.sep, y.lab.cc = y.lab.cc), "CStorEm2.rds")
+          
       } else if (input$filltype == "3") { 
      # if (length(plots.data()$hl.vec) == 3) browser()
                 gg.x <- ggplot() + 
           geom_area(data = plots.data()$hl.data2, aes(years, MMTC, fill = se.hl.type)) +
           geom_hline(yintercept = 0) +
-          scale_x_continuous(breaks = seq(hwp.dataX$MIN.PLOT.YR, hwp.dataX$MAX.PLOT.YR, by = yr.sep), limits = c(hwp.dataX$MIN.PLOT.YR, max(plots.data()$hl.data2$years)), minor_breaks = NULL) +
+          scale_x_continuous(breaks = seq(min.yr, max.yr, by = yr.sep), limits = c(min.yr, max(plots.data()$hl.data2$years)), minor_breaks = NULL) +
           scale_y_continuous(breaks = seq(plots.data()$max.y.3$min.y, plots.data()$max.y.3$max.y, by = plots.data()$max.y.3$breaks.y), 
                              limits = c(plots.data()$max.y.3$min.y, plots.data()$max.y.3$max.y), minor_breaks = NULL, expand = c(0, 0)) +
           scale_fill_manual(labels = plots.data()$hl.leg.names,
@@ -369,6 +388,14 @@ plot_CStorEm_Server <- function(id, hwp.dt) {
           theme(text = element_text(size = 20), 
                 legend.position = "right", legend.text = element_text(size = 15), legend.spacing.y = unit(0, 'cm'))
         
+                # For creating the figure outside of the app... 
+            #    write_rds(list(data1 = plots.data()$hl.data2, 
+            #                   max.y.3 = plots.data()$max.y.3, 
+            #                   hl.leg.names = plots.data()$hl.leg.names,
+            #                   hl.breaks = plots.data()$hl.names[plots.data()$hl.vec], 
+            #                   hl.values = plots.data()$hex_codes.hl.use[plots.data()$hl.vec],
+            #                   min.yr = min.yr, max.yr = max.yr, yr.sep = yr.sep, y.lab.cc = y.lab.cc), "CStorEm3.rds")
+                
       }
       #      browser()
       gg.x2 <- gg.x + theme(legend.text = element_text(size = 8))

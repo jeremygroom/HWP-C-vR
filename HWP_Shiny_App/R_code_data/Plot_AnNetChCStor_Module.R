@@ -144,7 +144,8 @@ plot_AnNetChCStor_Server <- function(id, hwp.dt) {
 
         # Setting up intervals for X labels
       yr.sep <- round(length(seq(hwp.data$MIN.PLOT.YR, hwp.data$MAX.PLOT.YR, by = 10))/10, ) * 10
-      
+      yr.max <- hwp.data$MAX.PLOT.YR
+      yr.min <- hwp.data$MIN.PLOT.YR
       
       if (input$fig.select == "1") {
         
@@ -168,7 +169,7 @@ plot_AnNetChCStor_Server <- function(id, hwp.dt) {
         p <- ggplot(data = t3, aes(Year, mmtc, fill = pool)) + 
           geom_col(position = "stack") +  
           geom_hline(yintercept = 0) +
-          scale_x_continuous(breaks = seq(hwp.data$MIN.PLOT.YR, hwp.data$MAX.PLOT.YR, by = yr.sep), minor_breaks = NULL) +
+          scale_x_continuous(breaks = seq(yr.min, yr.max, by = yr.sep), minor_breaks = NULL) +
           scale_y_continuous(breaks = seq(t.y$min.y, t.y$max.y ,by = t.y$breaks.y), limits = c(t.y$min.y, t.y$max.y), expand = c(0, 0)) +
           scale_fill_manual(values = t3.leg$hex.sel, breaks = t3.leg$pool.sel, labels = t3.leg$labs.sel, name = NULL) +  
           labs(y = y.lab.cc, x = NULL, 
@@ -181,10 +182,12 @@ plot_AnNetChCStor_Server <- function(id, hwp.dt) {
         
         
         if (input$lines == TRUE) {
-          p <-  p + geom_line(aes(Year, Net, color = net.line.color), size = 2) +
+          p <-  p + geom_line(aes(Year, Net, color = net.line.color), linewidth = 2) +
             scale_color_manual(values = net.line.color, name = NULL, labels = "Net") } 
-        
-        
+       
+        # For creating the figure outside of the app... 
+       # write_rds(list(t3 = t3, yr.min = yr.min, yr.max = yr.max, yr.sep = yr.sep, t.y = t.y, t3.leg = t3.leg, y.lab.cc = y.lab.cc),
+      #           "forPlot_AnNetChCStor1.rds")
         
       } else {
         
@@ -208,7 +211,7 @@ plot_AnNetChCStor_Server <- function(id, hwp.dt) {
         p <- ggplot(data = t3, aes(Year, mmtc, fill = pool)) + 
           geom_col(position = "stack") +  
           geom_hline(yintercept = 0) +
-          scale_x_continuous(breaks = seq(hwp.data$MIN.PLOT.YR, hwp.data$MAX.PLOT.YR, by = yr.sep), minor_breaks = NULL) +
+          scale_x_continuous(breaks = seq(yr.min, yr.max, by = yr.sep), minor_breaks = NULL) +
           scale_y_continuous(breaks = seq(t.y$min.y, t.y$max.y ,by = t.y$breaks.y), limits = c(t.y$min.y, t.y$max.y), expand = c(0, 0)) +
           scale_fill_manual(values = t3.leg$hex.sel, breaks = t3.leg$pool.sel, labels = t3.leg$labs.sel, name = NULL) +  
           labs(y = y.lab.cc, x = NULL, 
@@ -221,18 +224,19 @@ plot_AnNetChCStor_Server <- function(id, hwp.dt) {
         
         
         if (input$lines == TRUE) {
-          p <-  p + geom_line(aes(Year, Net, color = net.line.color), size = 2) +
+          p <-  p + geom_line(aes(Year, Net, color = net.line.color), linewidth = 2) +
             scale_color_manual(values = net.line.color, name = NULL, labels = "Net") } 
         
+        # For creating the figure outside of the app... 
+        #write_rds(list(t3 = t3, yr.min = yr.min, yr.max = yr.max, yr.sep = yr.sep, t.y = t.y, t3.leg = t3.leg, y.lab.cc = y.lab.cc),
+        #          "forPlot_AnNetChCStor2.rds")
         
         
         
       }
       
-      p 
-      
-      
-      
+      p
+    
     }) 
     
     output$Plot_anccs.1 <- renderPlot(plotForOutput1())  
